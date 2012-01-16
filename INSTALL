@@ -1,0 +1,136 @@
+PyPedia : The free python programming environment that anyone can edit.
+
+http://www.pypedia.com
+
+These are installation instructions for PyPedia_server. 
+
+Installation:
+
+Assume you have downloaded, installed and configured mediawiki-1.18.0
+
+-----------------------------------------------------------------
+Step 1: Alter MediaWiki table schema
+-----------------------------------------------------------------
+
+Login in mysql using the root account that you declared during installation,
+go to the database where your wiki is stored (also declared during installation)
+Execute the following commands:
+(Substitute "wpl_" with the prefix of the wiki tables, given at the mediawiki installation)
+
+ALTER TABLE wpl_user ADD user_ssh_host varbinary(255);
+ALTER TABLE wpl_user ADD user_ssh_username varbinary(255) ;
+ALTER TABLE wpl_user ADD user_ssh_port varbinary(255) ;
+ALTER TABLE wpl_user ADD user_ssh_path varbinary(255) ;
+
+
+------------------------------------------------------------------
+STEP 2: Install PyPedia_server
+------------------------------------------------------------------
+Go to the /extensions directory of the MediaWiki installation and run:
+
+git clone git@github.com:kantale/PyPedia_server.git
+
+
+------------------------------------------------------------------
+STEP 3: Change LocalSettings.php
+------------------------------------------------------------------
+
+Edit LocalSettings.php and add:
+
+
+$wgUseAjax = true;
+require_once( "{$IP}/extensions/PyPedia_server/pypedia.php");
+
+#Hooks for PyPedia
+$wgHooks['EditPage::attemptSave'][] = 'pypediaEditPageAttemptSave';
+$wgHooks['EditFormPreloadText'][] = array('pypediaPrefill');
+$wgHooks['EditFilter'][] = 'pypediaEditFilter';
+$wgHooks['DoEditSectionLink'][] = 'pypediaDoEditSectionLink';
+$wgHooks['EditPage::showEditForm:initial'][] = 'pypediaEditForm';
+
+#The group that can edit the code
+$wgGroupPermissions['codeeditor'] = $wgGroupPermissions['user'];
+
+#The administrators.
+$wgGroupPermissions['pypediaadmin'] = $wgGroupPermissions['user'];
+
+# Do not have to, but it is a good idea, for Anonymous not to be able to create pages
+$wgGroupPermissions['*']['createpage'] = false;
+
+
+------------------------------------------------------------------
+STEP 4: Substitute index.php and Vector.php
+------------------------------------------------------------------
+substitute index.php and Vector.php (after taking backups)
+
+Go to /extensions/PyPedia_server and run:
+
+cp ../../index.php ../../index.php.backup
+cp index.php ../../index.php
+
+cp ../../skins/Vector.php ../../skins/Vector.php.backup
+cp Vector.php ../../skins/Vector.php
+
+
+------------------------------------------------------------------
+STEP 5: Create file with passwords
+------------------------------------------------------------------
+
+Create a file pw.php in the root directory of the mediawiki installation.
+write to the file: (Copy the XXX files from the values found in LocalSettings.php, except 
+$wgDBpreffix which is the preffix of the table names)
+
+<?php
+## Database settings
+$wgDBtype           = "XXX";
+$wgDBserver         = "XXX";
+$wgDBname           = "XXX";
+$wgDBpreffix        = "XXX";
+$wgDBuser           = "XXX";
+$wgDBpassword       = "XXX";
+?>
+
+Run:
+chown www-data pw.pwp
+chgrp www-data pw.php 
+chmod 600 pw.php
+
+-------------------------------------------------------------------
+STEP 6: Install google appengine 
+-------------------------------------------------------------------
+
+Install python 2.7 Google Development environment:
+http://code.google.com/appengine/docs/python/gettingstartedpython27/devenvironment.html
+
+Choose a name of your google appllication (the one used is pypediacode), i.e: myapplication
+
+Edit appspot/app.yaml
+And change the application title in the line:
+ application: pypediacode
+For example:
+ application: myapplication
+
+Edit appspot/pypediacode.py and change the line:
+ self.response.headers.add_header("Access-Control-Allow-Origin", "http://www.pypedia.com")
+With the name of the domain of your wiki i.e:
+ self.response.headers.add_header("Access-Control-Allow-Origin", "http://www.example.com")
+Alternatively you can set:
+ self.response.headers.add_header("Access-Control-Allow-Origin", "*")
+So that anyone can use your python sandbox, and not only from your domain (not recommended).
+
+Upload your application:
+appcfg.py update appspot/
+
+Edit pypedia.js and change the line:
+ url: 'http://pypediacode.appspot.com',
+With your google application. i.e:
+ url: 'http://myapplication.appspot.com',
+
+Now you should have a python sandbox running in Google appengine.
+To test: Run a script from the front page of your wiki. 
+
+--------------------------------------------------------------------
+
+Email for questions: 
+pypedia@googlegroups.com
+

@@ -1,0 +1,10 @@
+PyPedia : The free python programming environment that anyone can edit.
+
+http://www.pypedia.com
+
+PyPedia_server is a MediaWiki extension that converts MediaWiki into a Rapid Application 
+Environment with some small IDE abilities based on python. For more information and for a 
+working installation please visit http://www.pypedia.com
+
+For installation instructions see INSTALL file.
+
