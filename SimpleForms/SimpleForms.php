@@ -278,7 +278,7 @@ class SimpleForms {
 				$element	  = 'input';
 				if (!isset($argv['onClick'])) $argv['onClick'] = '';
 
-				$argv['onClick'] .= "wpl_manage_form(this.id)";
+				$argv['onClick'] .= "pyp_manage_form(this.id)";
 
 //				$argv['onClick'] .= "a=[];
 //					if (!document.getElementById('password_input')) {
