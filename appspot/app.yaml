@@ -8,3 +8,7 @@ handlers:
 - url: /.*
   script: pypediacode.app
 
+libraries:
+- name: numpy
+  version: latest
+
