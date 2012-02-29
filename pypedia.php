@@ -151,9 +151,23 @@ function pypediaEditForm($editPage) {
 	return true;
 }
 
+
+
 //Checks if this is a user title
 function pypediaIsUser($pypediaTitle) {
-	return (substr($pypediaTitle, 0, 4) == "User");
+//	Old user naming schema
+//	return (substr($pypediaTitle, 0, 4) == "User");
+
+	$pypediaTitle_r = str_replace(" ", "_", $pypediaTitle);
+	$splitted = explode("_", $pypediaTitle_r);
+	$c = count($splitted);
+	if ($c >= 3) {
+		if ($splitted[$c-2] == "user") {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
@@ -161,13 +175,15 @@ function pypediaCheckUserTitle($pypediaTitle, $pypediaUser) {
 	$pypediaTitle_s = explode(' ', $pypediaTitle);
 
 	//Invalid user name format
-	if (count($pypediaTitle_s) < 3) {
-		return "The name of this User specific article is invalid . The name of this article should be: User_&lt;Username&gt;_&lt;MethodName&gt;";
+	if (!pypediaIsUser($pypediaTitle)) {
+		return "The name of this User specific article is invalid . The name of this article should be: %lt;MethodName&gt;_user_&lt;Username&gt;";
 	}
 
+	$pypediaTitle_s_length = count($pypediaTitle_s);
+
 	// The user declared is not the real one
-	if ($pypediaTitle_s[1] != $pypediaUser) {
-		return "To create a user specific article, the article's name should be User_" . $pypediaUser . "_&lt;MethodName&gt;";
+	if ($pypediaTitle_s[$pypediaTitle_s_length - 1] != $pypediaUser) {
+		return "To create a user specific article, the article's name should be &lt;MethodName&gt;_user_" . $pypediaUser;
 	}
 
 	return "ok";
@@ -178,6 +194,7 @@ function pypediaCheckUserTitle($pypediaTitle, $pypediaUser) {
 function pypediaCheckIfEditIsAllowed($editpage) {
 
 	global $wgUser;
+	global $wgServer;
 
 	//Duplicate code.. FIXME
 
@@ -274,12 +291,12 @@ function pypediaCheckIfEditIsAllowed($editpage) {
 
 		//Anonymous users are not allowed to create articles starting with "User"
 		if (pypediaIsUser($pypediaTitle) && $pypediaIsAnonymous) {
-			return "Anonymous users are not allowed to create articles starting with 'User'. These are for User specific articles";
+			return "Anonymous users are not allowed to create user articles. These are specific articles for signed users";
 		}
 
 		//Ony admins can create non-User articles
 		if ( (!pypediaIsUser($pypediaTitle)) && (!$pypediaIsPypediaadmin)) {
-			return "Only admins are allowed to create articles that belong to the normal namespace. You are allowed to create articles with title starting with: User_{$pypediaUser}_ (for example User_{$pypediaUser}_foo ).";
+			return "Only admins are allowed to create articles that belong to the normal namespace. You are allowed to create articles with title like: Foo_user_{$pypediaUser}. For example: <a href='{$wgServer}/index.php?title={$pypediaTitle}_user_{$pypediaUser}&action=edit'>{$pypediaTitle}_user_{$pypediaUser}</a>";
 		}
 
 		//Check if the structure of the title of a User article is correct
@@ -343,7 +360,6 @@ function pypediaEditPageAttemptSave($editpage) {
 	global $wgUser;
 	global $pypediaDefaultStructure;
 	global $pypediaLanguageExtension;
-
 
 	//Who tries to edit this article?
 	//If the editor is unregistered then $pypediaUser is the editor's ip address
