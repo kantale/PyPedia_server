@@ -69,5 +69,18 @@
 							});
 
 					}
+					else if (clicked_id == 'fa') {
+						var elem = document.getElementById('header_form').elements;
+						article_name = '';
+						for(var i = 0; i < elem.length; i++) {
+							if (elem[i].name == 'article_title') {
+                                                                article_name = elem[i].value;
+                                                        }
+
+						}
+						var auri = 'index.php?fork=' + encodeURIComponent(article_name);
+						//window.open(auri);
+						window.location = auri;
+					}
 				}
 

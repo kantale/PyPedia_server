@@ -6,7 +6,7 @@ These are installation instructions for PyPedia_server.
 
 Installation:
 
-Assume you have downloaded, installed and configured mediawiki-1.18.0
+Assume you have downloaded, installed and configured mediawiki-1.18.0 (or more recent)
 
 -----------------------------------------------------------------
 Step 1: Alter MediaWiki table schema
@@ -91,7 +91,7 @@ $wgDBpassword       = "XXX";
 ?>
 
 Run:
-chown www-data pw.pwp
+chown www-data pw.php
 chgrp www-data pw.php 
 chmod 600 pw.php
 

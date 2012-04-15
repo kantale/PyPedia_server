@@ -54,6 +54,7 @@ if ( isset( $_SERVER['MW_COMPILED'] ) ) {
 }
 
 $mediaWiki = new MediaWiki();
+global $wgUser;
 
 //PYPEDIA Add rest interface
 $raw_code = $wgRequest->getVal( 'get_code' );
@@ -76,6 +77,60 @@ if ($raw_code) {
 		echo $theCode;
 		exit;
 	}
+}
+$raw_code = $wgRequest->getVal( 'fork' );
+if ($raw_code) {
+	$currentUser = $wgUser->getName();
+
+	//Check if the user has logged in
+	if (ip2long($currentUser) !== false) {
+		print '<html><body><script type="text/javascript">window.alert("Error: You need to be signed in to fork an article"); window.location = "'. $raw_code .'"</script></body></html>';
+	}
+	else {
+		$forked_user_name = pypediaGetUserFromArticleName($raw_code);
+		//Get the user where the original article belongs
+		if ($forked_user_name === false) {
+			$new_article_name = $raw_code . "_user_" . $currentUser;
+		}
+		else if ($forked_user_name == $currentUser) {
+			print '<html><body><script type="text/javascript">window.alert("Error: You cannot fork an article that belongs to you"); window.location = "'. $raw_code .'"</script></body></html>';
+		}
+		else {
+			$new_article_name = str_replace("_user_" . $forked_user_name, "_user_" . $currentUser, $raw_code);
+		}
+		$old_contents = pypediaGetArticle($raw_code);
+		$new_contents = str_replace($raw_code, $new_article_name, $old_contents);
+
+		//Changing permissions
+		$new_contents = preg_replace('/===Documentation Permissions===\n*(.*)/i', "===Documentation Permissions===\n\n" . $currentUser, $new_contents);
+		$new_contents = preg_replace('/===Code Permissions===\n*(.*)/i', "===Code Permissions===\n\n" . $currentUser, $new_contents);
+		$new_contents = preg_replace('/===Unit Tests Permissions===\n*(.*)/i', "===Unit Tests Permissions===\n\n" . $currentUser, $new_contents);
+		$new_contents = preg_replace('/===Permissions Permissions===\n*(.*)/i', "===Permissions Permissions===\n\n" . $currentUser, $new_contents);
+
+		$aTitle = Title::newFromText($new_article_name);
+		$anArticle = new Article($aTitle);
+		if ($anArticle != null) {
+			$initial_content = $anArticle->getContent();
+			//Check if the article is empty
+			if (substr($initial_content, 0, 40) !== 'There is currently no text in this page.') {
+				print '<html><body><script type="text/javascript">window.alert("Error: There is already an article with tile: '. $new_article_name  .'"); window.location = "'. $raw_code .'"</script></body></html>';
+			}
+			else {
+				$articleCreated = $anArticle->doEdit($new_contents, 'Created from forking article: ' . $raw_code, EDIT_NEW);
+				if ($articleCreated) {
+					print '<html><body><script type="text/javascript">window.location = "'. $new_article_name .'"</script></body></html>';
+				}
+				else {
+					print '<html><body><script type="text/javascript">window.alert("Error: Internal error. Could not create article"); window.location = "'. $raw_code .'"</script></body></html>';
+				}
+			}
+		}
+		else {
+			print '<html><body><script type="text/javascript">window.alert("Error: Internal error. Cannot initiate Article class"); window.location = "'. $raw_code .'"</script></body></html>';
+		}
+
+	}
+	exit;
 }
 // \PYPEDIA
 

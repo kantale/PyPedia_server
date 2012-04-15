@@ -231,7 +231,7 @@ class VectorTemplate extends BaseTemplate {
 var myTextArea = document.getElementById('main_form');
 var myCodeMirror = CodeMirror(function(elt) { myTextArea.parentNode.replaceChild(elt, myTextArea); },
 
-{ mode:"python", gutter:"true", lineNumbers: "true", value: "print 'Welcome to PyPedia'\n\nprint 'This is the Pascal Triange for 10 lines:'\nPascal_triangle(10, True)\n\nprint 'and this is the solution to the Hanoi towers problem for 5 disks:'\nHanoi_towers(5, True)\n" });
+{ mode:"python", gutter:"true", lineNumbers: "true", value: "print 'Welcome to PyPedia'\n\nprint 'This is the Pascal Triangle for 10 lines:'\nPascal_triangle(10, True)\n\nprint 'and this is the solution to the Hanoi towers problem for 5 disks:'\nHanoi_towers(5, True)\n" });
 
 	</script>
 <?php } ?>

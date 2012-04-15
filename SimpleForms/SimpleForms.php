@@ -159,10 +159,11 @@ class SimpleForms {
 		}
 		$action = isset($argl['action']) ? $argl['action'] : $wgScript;
 
-// WIKIPL
+// PYPEDIA
 //		$form = "<form$args action=\"$action\" id=\"$id\">$hidden$form";
-		$form = "<form$args action=\"$action\" id=\"parameters_form\">$hidden$form";
-// WIKIPL
+		$form = "<form$args action=\"$action\">$hidden$form";
+//		$form = "<form$args action=\"$action\" id=\"parameters_form\">$hidden$form";
+// PYPEDIA
 		$this->id = uniqid('sf-');
 		$form = preg_replace("/^\\s+/m",'',$form);
 		return $parser->insertStripItem( $form, $parser->mStripState );
@@ -275,9 +276,9 @@ class SimpleForms {
 			else {
 				# Render the Ajax input as a form submit button
 				$argv['type'] = 'button';
-				$element	  = 'input';
+				$element = 'input';
 				if (!isset($argv['onClick'])) $argv['onClick'] = '';
-
+				//PYPEDIA: Insert the name of the javascript function that will manage the buttons 
 				$argv['onClick'] .= "pyp_manage_form(this.id)";
 
 //				$argv['onClick'] .= "a=[];
@@ -497,10 +498,10 @@ class SimpleForms {
 			# No such title, create new article from content if allowed to create
 			else {
 				if ($wgSimpleFormsAllowCreate && ($allow || $wgUser->isAllowed('edit')))
-// WIKIPL
+// PYPEDIA Had to change this after new version of MediaWiki
 //					$article->insertNewArticle($content, $summary ? $summary : wfMsg('sf_editsummary', 'created'), false, false);
 					$artile->doEdit($content, $summary ? $summary : wfMsg('sf_editsummary', 'created'), EDIT_NEW);
-// \WIKIPL
+// \PYPEDIA
 				else $wgOut->setPageTitle(wfMsg('whitelistedittitle'));
 			}
  
@@ -648,13 +649,13 @@ function wfSetupSimpleForms() {
 	global $wgLanguageCode,$wgMessageCache,$wgHooks,$wgRequest,$wgSimpleForms;
  
 	# Add messages
-// WIKIPL
+// PYPEDIA
 //	if ($wgLanguageCode == 'en') {
 //		$wgMessageCache->addMessages(array(
 //			'sf_editsummary' => 'Article updated via HTTP request'
 //		));
 //	}
-// \WIKIPL
+// \PYPEDIA
 
 	# Instantiate a singleton for the extension
 	$wgSimpleForms = new SimpleForms();
