@@ -170,6 +170,20 @@ function pypediaIsUser($pypediaTitle) {
 	return false;
 }
 
+//Return the name of the user that created a USER article
+function pypediaGetUserFromArticleName($pypediaTitle) {
+        $pypediaTitle_r = str_replace(" ", "_", $pypediaTitle);
+        $splitted = explode("_", $pypediaTitle_r);
+        $c = count($splitted);
+        if ($c >= 3) {
+                if ($splitted[$c-2] == "user") {
+                        return $splitted[$c-1];
+                }
+        }
+
+        return false;
+
+}
 
 function pypediaCheckUserTitle($pypediaTitle, $pypediaUser) {
 	$pypediaTitle_s = explode(' ', $pypediaTitle);
@@ -669,6 +683,7 @@ path=<pathValue> (optional default value: ./)
 	}
 }
 
+
 //Sets the text in a section of an article
 function pypediaSetTextToASection($article, $section, $theText) {
 	$articleSplited = split("\n", $article);
@@ -1091,11 +1106,16 @@ function pypediaMakePrefilTextFromStructure($structure, $title, $permissions, $l
 	global $wgServer;
 	global $wgScriptPath;
 
+	$title_real = str_replace(' ', '_', $title);
 	$ret = "";
 
 	foreach ($structure as $section) {
 		if (is_string($section)) {
-			if ($section == "_WPL_ARTICLE_") { continue; } //Do Nothing
+			if ($section == "_WPL_ARTICLE_") { 
+				$ret = "{{#form:action=<nowiki>$wgServer$wgScriptPath/extensions/PyPedia_server/pypdownload.php</nowiki>|method=post|target=_blank|id=header_form|enctype=multipart/form-data}}{{#input:type=hidden|name=article_title|value=$title_real}}{{#input:type=hidden|name=pyp_username|value={{CURRENTUSER}}}}{{#input:type=ajax|value=Fork this article|id=fa}}{{#formend:}}
+";
+				continue; 
+			} //Do Nothing
 
 			//Print the section
 			$ret .= str_repeat("=", $level) . $section . str_repeat("=", $level) . "\n\n";
@@ -1103,6 +1123,7 @@ function pypediaMakePrefilTextFromStructure($structure, $title, $permissions, $l
 			if ($section === "Documentation") {
 				$ret .= "Documentation for '''$title'''
 [[Category:User]]
+[[Category:Algorithms]]
 ";
 			}
 			else if (($section === "Code") || $section === "Development Code") {
@@ -1176,9 +1197,8 @@ sub uni1 {
 
 			}
 			else if ($section == "Parameters") {
-				$title_real = str_replace(' ', '_', $title);
 				$ret .= "<!-- DO NOT EDIT HERE! AUTOMATICALLY GENERATED -->
-{{#form:action=<nowiki>$wgServer$wgScriptPath/extensions/PyPedia_server/pypdownload.php</nowiki>|method=post|target=_blank|enctype=multipart/form-data}}
+{{#form:action=<nowiki>$wgServer$wgScriptPath/extensions/PyPedia_server/pypdownload.php</nowiki>|method=post|target=_blank|id=parameters_form|enctype=multipart/form-data}}
 <p>
 {{#input:type=hidden|name=article_title|value=$title_real}}
 {{#input:type=hidden|name=pyp_username|value={{CURRENTUSER}}}}
