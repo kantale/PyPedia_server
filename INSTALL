@@ -6,7 +6,31 @@ These are installation instructions for PyPedia_server.
 
 Installation:
 
-Assume you have downloaded, installed and configured mediawiki-1.18.0 (or more recent)
+-----------------------------------------------------------------
+Step 0: Install MediaWiki
+-----------------------------------------------------------------
+
+Before you install make sure that you have installed / updated 
+the following packages:
+
+apt-get install php-pear
+apt-get install libpcre3-dev
+apt-get install imagemagick
+apt-get install highlight
+apt-get install php5-curl
+pecl install apc
+
+edit file: /etc/php5/apache2/php.ini 
+	ADD: extension=apc.so
+
+git clone git://git.libssh2.org/libssh2.git
+	Compile and install libssh2
+
+pecl install ssh2 
+edit file: /etc/php5/apache2/php.ini 
+	ADD: extension=ssh2.so
+
+After these steps you can proceed with installing mediawiki-1.18.0 (or newer)
 
 -----------------------------------------------------------------
 Step 1: Alter MediaWiki table schema
