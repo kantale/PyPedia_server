@@ -107,6 +107,9 @@ if ($raw_code) {
 		$new_contents = preg_replace('/===Unit Tests Permissions===\n*(.*)/i', "===Unit Tests Permissions===\n\n" . $currentUser, $new_contents);
 		$new_contents = preg_replace('/===Permissions Permissions===\n*(.*)/i', "===Permissions Permissions===\n\n" . $currentUser, $new_contents);
 
+		//Removing the article from the validated category
+		$new_contents = str_replace('[[Category:Validated]]', '', $new_contents);
+
 		$aTitle = Title::newFromText($new_article_name);
 		$anArticle = new Article($aTitle);
 		if ($anArticle != null) {
