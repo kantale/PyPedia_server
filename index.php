@@ -107,8 +107,8 @@ if ($raw_code) {
 		$new_contents = preg_replace('/===Unit Tests Permissions===\n*(.*)/i', "===Unit Tests Permissions===\n\n" . $currentUser, $new_contents);
 		$new_contents = preg_replace('/===Permissions Permissions===\n*(.*)/i', "===Permissions Permissions===\n\n" . $currentUser, $new_contents);
 
-		//Removing the article from the validated category
-		$new_contents = str_replace('[[Category:Validated]]', '', $new_contents);
+		//Moving from the Validated to the user category
+		$new_contents = str_replace('[[Category:Validated]]', '[[Category:User]]', $new_contents);
 
 		$aTitle = Title::newFromText($new_article_name);
 		$anArticle = new Article($aTitle);
@@ -116,7 +116,7 @@ if ($raw_code) {
 			$initial_content = $anArticle->getContent();
 			//Check if the article is empty
 			if (substr($initial_content, 0, 40) !== 'There is currently no text in this page.') {
-				print '<html><body><script type="text/javascript">window.alert("Error: There is already an article with tile: '. $new_article_name  .'"); window.location = "'. $raw_code .'"</script></body></html>';
+				print '<html><body><script type="text/javascript">window.alert("Error: There is already an article with title: '. $new_article_name  .'"); window.location = "'. $raw_code .'"</script></body></html>';
 			}
 			else {
 				$articleCreated = $anArticle->doEdit($new_contents, 'Created from forking article: ' . $raw_code, EDIT_NEW);
