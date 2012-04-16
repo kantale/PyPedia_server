@@ -154,7 +154,16 @@ Now you should have a python sandbox running in Google appengine.
 To test: Run a script from the front page of your wiki. 
 
 --------------------------------------------------------------------
+Step 7: Create MediaWiki user: pypediauser
+--------------------------------------------------------------------
+Create Mediawiki user with 
+username: pypediauser 
+password: pypediauserpw
 
+This will be the standard user that will log in and download articles
+from the python library
+
+--------------------------------------------------------------------
 Email for questions: 
 pypedia@googlegroups.com
 
