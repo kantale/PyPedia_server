@@ -568,11 +568,13 @@ path=<pathValue> (optional default value: ./)
 	}
 
 	//Does this user have permissions in this section?
-	$ret = pypediaCheckPermissions($oldtext, $newtext, $pypediaUser);
-	if ($ret[0] != "ok") {
-		pypediaError($ret[0], $pypediaTitle, $pypediaSection);
-		$editpage->textbox1 = $oldtext;
-		return false;
+	if (!$pypediaIsPypediaadmin) {
+		$ret = pypediaCheckPermissions($oldtext, $newtext, $pypediaUser);
+		if ($ret[0] != "ok") {
+			pypediaError($ret[0], $pypediaTitle, $pypediaSection);
+			$editpage->textbox1 = $oldtext;
+			return false;
+		}
 	}
 
 	//Getting the code and the unit tests
