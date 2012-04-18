@@ -1668,6 +1668,7 @@ function pypediaGetArticleBeforeTimestamp($pypediaTitle, $pypediaTimestamp) {
 		'page_id',
 		array(
 			'page_title' => $pypediaTitle,
+			'page_namespace' => 0,
 		),
 		__METHOD__);
 
