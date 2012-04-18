@@ -1470,7 +1470,7 @@ function pypediaGalaxyXML2HTML($galaxyXML, $pypediaTitle, $pypediaUser, $pypedia
 	}
 
 	//Iterate through the generated structure
-	$ret = "{{#form:action=<nowiki>$wgServer$wgScriptPath/extensions/PyPedia_server/pypdownload.php</nowiki>|method=post|target=_blank|enctype=multipart/form-data}} 
+	$ret = "{{#form:action=<nowiki>$wgServer$wgScriptPath/extensions/PyPedia_server/pypdownload.php</nowiki>|method=post|target=_blank|id=parameters_form|enctype=multipart/form-data}} 
 <p>";
 	foreach ($parsed->param as $param) {
 		$ret .= $param["label"];
