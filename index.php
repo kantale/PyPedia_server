@@ -57,9 +57,15 @@ $mediaWiki = new MediaWiki();
 global $wgUser;
 
 //PYPEDIA Add rest interface
+//Has before timestamp been declared?
+$before_timestamp = $wgRequest->getVal( 'b_timestamp' );
+if (!$before_timestamp) {
+	$before_timestamp = null;
+}
+
 $raw_code = $wgRequest->getVal( 'get_code' );
 if ($raw_code) {
-	$theCode = pypediaGetCodeFromArticle("", $raw_code, "");
+	$theCode = pypediaGetCodeFromArticle("", $raw_code, "", $before_timestamp);
 	print $theCode;
 	exit;
 }
@@ -71,13 +77,14 @@ if ($raw_code) {
 	}
 	else {
 		$fun_name = substr($raw_code, $pos1, $pos2-$pos1);
-		$theCode = pypediaGetCodeFromArticle("", $raw_code, "");
+		$theCode = pypediaGetCodeFromArticle("", $raw_code, "", $before_timestamp);
 		header('Content-disposition: attachment; filename=' . $fun_name . '.py');
 		header('Content-type: text/plain');
 		echo $theCode;
 		exit;
 	}
 }
+
 $raw_code = $wgRequest->getVal( 'fork' );
 if ($raw_code) {
 	$currentUser = $wgUser->getName();
