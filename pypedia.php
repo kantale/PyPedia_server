@@ -1655,41 +1655,111 @@ function pypediaexec3($theCode, $unitests, $pypediaTitle, $pypediaSection) {
 
 }
 
+//Get the content of an article right BEFORE a timestamp
+//TODO: Can we do it with simpler database api?
+//TODO: Remove the 50 throttle
+function pypediaGetArticleBeforeTimestamp($pypediaTitle, $pypediaTimestamp) {
 
-//Gets the content from an article. Gets called forth
-function pypediaGetArticle($pypediaTitle, &$newTitle) {
+	//Request database
+	$dbw = wfGetDB( DB_SLAVE );
 
-	$aTitle = Title::newFromText($pypediaTitle);
+	//Get the Page_id of the article
+	$res = $dbw->select( 'page',
+		'page_id',
+		array(
+			'page_title' => $pypediaTitle,
+		),
+		__METHOD__);
 
-	$anArticle = new Article($aTitle);
-	if ($anArticle != null) {
-		$ret = $anArticle->getContent();
-
-		#Mipws einai redirect?
-		preg_match_all("|\#REDIRECT[ \t]+\[\[[a-zA-Z0-9_]+\]\]|U", $ret, $out, PREG_PATTERN_ORDER);
-		if (count($out[0]) == 0) {
-			//It is not redirect
-			$newTitle = $pypediaTitle;
-			return $ret;
-		}
-		else {
-			//It is redirect
-			//Get the redirect article
-			$start = strpos($out[0][0], "[[");
-			$end = strpos($out[0][0], "]]");
-			$newTitle = substr($out[0][0], $start+2, $end-$start-2);
-			$ret2 = pypediaGetArticle($newTitle);
-			return $ret2;
-		}
-
+	$article_id = 0;
+	foreach ( $res as $row ) {
+		$article_id = $row->page_id;
 	}
 
-	return null;
+	//Get the last 50 revisions of that article
+	$res = $dbw->select( 'revision',
+		'rev_timestamp',
+		array(
+			'rev_page' => $article_id,
+		),
+		__METHOD__,
+		array( 'ORDER BY' => 'rev_timestamp ASC', 'LIMIT' => 50 ) );
+
+	//Get the most recent timestamp of the article that is older than the $pypediaTimestamp
+	$revision_timestamp = null;
+	$last_timestamp = null;
+	foreach ( $res as $row ) {
+		$current_timestamp = strval($row->rev_timestamp);
+		$last_timestamp = $current_timestamp;
+		if ($current_timestamp <= $pypediaTimestamp) {
+			$revision_timestamp = $current_timestamp;
+		}
+		else {
+			break;
+		}
+	}
+
+	if (!$revision_timestamp) {
+		$revision_timestamp = $last_timestamp;
+	}
+
+	//Get the estimated revision
+	$aTitle = Title::newFromText($pypediaTitle);
+	$r = Revision::loadFromTimestamp( $dbw, $aTitle, $revision_timestamp );
+	
+	if (!$r) {
+		return null;
+	}
+	else {
+		return $r->getText();
+	}
+
+}
+
+//Gets the content from an article. Gets called forth
+function pypediaGetArticle($pypediaTitle, &$newTitle, $pypediaTimestamp = null) {
+
+	//Get content from article
+	if ($pypediaTimestamp) {
+		$ret = pypediaGetArticleBeforeTimestamp($pypediaTitle, $pypediaTimestamp);
+		if (!$ret) {
+			return null;
+		}
+	}
+	else {
+		//Much faster
+		$aTitle = Title::newFromText($pypediaTitle);
+		$anArticle = new Article($aTitle);
+		if ($anArticle != null) {
+			$ret = $anArticle->getContent();
+		}
+		else {
+			return null;
+		}
+	}
+
+	#Is it redirect?
+	preg_match_all("|\#REDIRECT[ \t]+\[\[[a-zA-Z0-9_]+\]\]|U", $ret, $out, PREG_PATTERN_ORDER);
+	if (count($out[0]) == 0) {
+		//It is not redirect
+		$newTitle = $pypediaTitle;
+		return $ret;
+	}
+	else {
+		//It is redirect
+		//Get the redirect article
+		$start = strpos($out[0][0], "[[");
+		$end = strpos($out[0][0], "]]");
+		$newTitle = substr($out[0][0], $start+2, $end-$start-2);
+		$ret2 = pypediaGetArticle($newTitle, $unused, $pypediaTimestamp);
+		return $ret2;
+	}
+
 }
 
 //Non Recursive! Gets the code from an Article. Gets called third
-function pypediaGetCodeFromArticleNR($pypediaTitle, &$newTitle) {
-	$anArticle = pypediaGetArticle($pypediaTitle, $newTitle);
+function pypediaGetCodeFromArticleNR($pypediaTitle, &$newTitle, $pypediaTimestamp = null) {
+	$anArticle = pypediaGetArticle($pypediaTitle, $newTitle, $pypediaTimestamp);
 
 	if ($anArticle != null) {
 		$anArticle = pypediaGetSection($anArticle, "==Code==");
@@ -1707,11 +1777,11 @@ function pypediaGetCodeFromArticleNR($pypediaTitle, &$newTitle) {
 }
 
 //Recursive. Called from "main"
-function pypediaGetCodeFromArticle($pypediaTitle, $pypediaUntestedCode, $pypediaUntestedUnittests) {
+function pypediaGetCodeFromArticle($pypediaTitle, $pypediaUntestedCode, $pypediaUntestedUnittests, $pypediaTimestamp = null) {
 	$functionsMet = array();
 	$functionsMet[$pypediaTitle] = True;
 	$ret = "";
-	$RetCode = pypediaGetCodeFromArticle2($pypediaTitle, $functionsMet, $ret, $pypediaUntestedCode, $pypediaUntestedUnittests);
+	$RetCode = pypediaGetCodeFromArticle2($pypediaTitle, $functionsMet, $ret, $pypediaUntestedCode, $pypediaUntestedUnittests, $pypediaTimestamp);
 
 	if ($RetCode === true) {
 	}
@@ -1761,14 +1831,14 @@ function pypediaGetFunctionCallsFromCode($theCode) {
 }
 
 //Recursive search for all function calls of an article. Gets called second
-function pypediaGetCodeFromArticle2($pypediaTitle, &$functionsMet, &$ret, $pypediaUntestedCode, $pypediaUntestedUnittests) {
+function pypediaGetCodeFromArticle2($pypediaTitle, &$functionsMet, &$ret, $pypediaUntestedCode, $pypediaUntestedUnittests, $pypediaTimestamp = null) {
 	//Get Current Article
 	if ($pypediaUntestedCode != null) {
 		$anArticle = $pypediaUntestedCode;
 		$newTitle = NULL;
 	}
 	else {
-		$anArticle = pypediaGetCodeFromArticleNR($pypediaTitle, $newTitle);
+		$anArticle = pypediaGetCodeFromArticleNR($pypediaTitle, $newTitle, $pypediaTimestamp);
 		//pypediaError($anArticle . "<-what?->" . $pypediaTitle, "  ");
 	}
 	if ($anArticle == null) {
@@ -1815,7 +1885,7 @@ function pypediaGetCodeFromArticle2($pypediaTitle, &$functionsMet, &$ret, $pyped
 		else if (!$thisExists){
 			$functionsMet[$funName] = True;
 			//Add the code recursively
-			pypediaGetCodeFromArticle2($funName, $functionsMet, $ret, null, null);
+			pypediaGetCodeFromArticle2($funName, $functionsMet, $ret, null, null, $pypediaTimestamp);
 			//pypediaError($funName . "<-->" . $ret, "nnn");
 		}
 	}
