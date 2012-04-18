@@ -568,13 +568,11 @@ path=<pathValue> (optional default value: ./)
 	}
 
 	//Does this user have permissions in this section?
-	if (!$pypediaIsPypediaadmin) {
-		$ret = pypediaCheckPermissions($oldtext, $newtext, $pypediaUser);
-		if ($ret[0] != "ok") {
-			pypediaError($ret[0], $pypediaTitle, $pypediaSection);
-			$editpage->textbox1 = $oldtext;
-			return false;
-		}
+	$ret = pypediaCheckPermissions($oldtext, $newtext, $pypediaUser, $pypediaIsPypediaadmin);
+	if ($ret[0] != "ok") {
+		pypediaError($ret[0], $pypediaTitle, $pypediaSection);
+		$editpage->textbox1 = $oldtext;
+		return false;
 	}
 
 	//Getting the code and the unit tests
@@ -785,7 +783,7 @@ function pypediaGetPathToSection($structure, $section, &$ret) {
 }
 
 //Gets the new and old versions. Checks if the changes were valid according to permissions.
-function pypediaCheckPermissions($oldtext, $newtext, $pypediaUser) {
+function pypediaCheckPermissions($oldtext, $newtext, $pypediaUser, $pypediaIsPypediaadmin) {
 	global $pypediaDefaultStructure;
 
 	$ret = array();
@@ -881,7 +879,7 @@ function pypediaCheckPermissions($oldtext, $newtext, $pypediaUser) {
 			}
 
 			//Return message if the change was not ok
-			if (!$changeWasOK) {
+			if (!$changeWasOK && !$pypediaIsPypediaadmin) {
 				$ret[0] = "You ($pypediaUser) don't have permissions to make changes in the {$changedSection["name"]} section";
 				return $ret;
 			}
