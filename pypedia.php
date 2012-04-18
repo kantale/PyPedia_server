@@ -242,6 +242,11 @@ function pypediaCheckIfEditIsAllowed($editpage) {
 		}
 	}
 
+	//Admins are allowed to do anything except what PyPedia forbids
+	if ($pypediaIsPypediaadmin) {
+		return "proceed";
+	}
+
 	//What was the previous content of the page?
 	$oldtext = $editpage->mArticle->getContent();
 
