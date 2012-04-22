@@ -85,6 +85,14 @@ if ($raw_code) {
 	}
 }
 
+$raw_code = $wgRequest->getVal( 'run_code' );
+if ($raw_code) {
+	$theCode = pypediaGetCodeFromArticle("", $raw_code, "", $before_timestamp);
+	$results = pypediaexec3($theCode, null, null, null);
+	print $results;
+	exit;
+}
+
 $raw_code = $wgRequest->getVal( 'fork' );
 if ($raw_code) {
 	$currentUser = $wgUser->getName();
