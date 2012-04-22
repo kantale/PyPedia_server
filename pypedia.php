@@ -1556,7 +1556,33 @@ function pypediaexec2($theCode, $unitests, $pypediaTitle, $pypediaSection) {
 	return xmlrpc_decode($response);
 }
 
-//Build the python code that will be executed to test if the edit was correct
+//Build the code that will run the submitted code and it will return the output
+function pypedia_build_python_run_code($the_code) {
+
+$code = "
+import sys
+import StringIO
+import traceback
+
+temp_stdout = sys.stdout
+sys.stdout = StringIO.StringIO()
+
+theGlobals = globals()
+
+try:
+	exec(\"\"\"" . addslashes($the_code) . "\"\"\") in theGlobals
+except Exception as details:
+	print traceback.format_exc()
+
+to_return = sys.stdout.getvalue()
+sys.stdout = temp_stdout
+print to_return
+" ;
+
+	return $code;
+}
+
+//Build the python code that will test the unitests
 function pypedia_build_python_code($the_code, $the_unitests) {
 
 $code = '
@@ -1628,7 +1654,14 @@ print ret
 
 //Execute the unitests in google appspots directly from here
 function pypediaexec3($theCode, $unitests, $pypediaTitle, $pypediaSection) {
-	$code = pypedia_build_python_code($theCode, $unitests);
+	if (!$unitests) {
+		$code = pypedia_build_python_run_code($theCode);
+		$line_limit = 500;
+	}
+	else {
+		$line_limit = 10;
+		$code = pypedia_build_python_code($theCode, $unitests);
+	}
 
 	$ch = curl_init();
 	curl_setopt($ch,CURLOPT_URL,'http://pypediacode.appspot.com');
@@ -1645,8 +1678,10 @@ function pypediaexec3($theCode, $unitests, $pypediaTitle, $pypediaSection) {
 		$str_respond_d = explode('\n', $str_respond);
 		end($str_respond_d);
 		$i = 0;
-		//Keep the last 10 lines of the result to show to the user.
-		while( ($val = current($str_respond_d)) and ($i<10)) {
+		//Keep the last $line_limit lines of the result to show to the user.
+		//If we are running unitests then either "ok" is expected or the error message
+		//Otherwise we allow only 500 limit of output of the submitted code
+		while( ($val = current($str_respond_d)) and ($i<$line_limit)) {
 			if (trim($val) == "") continue;
 
 			$i++;
@@ -1655,9 +1690,8 @@ function pypediaexec3($theCode, $unitests, $pypediaTitle, $pypediaSection) {
 		}
 		return $fixed_reply;
 	}
-
+	
 	return "ok";
-
 }
 
 //Get the content of an article right BEFORE a timestamp
