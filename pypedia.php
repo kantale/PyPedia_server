@@ -1261,6 +1261,8 @@ function pypediaPrefill(&$textbox, &$title) {
 
 function pypediaError($pypediaText, $pypediaTitle, $pypediaSection) {
 
+	global $wgUser;
+
 	$tmp1 = str_replace("\r", "", $pypediaText);
 	$repl1 = array("\n", "\"");
 	$repl2 = array("\\n", "\\\"");
@@ -1274,7 +1276,9 @@ function pypediaError($pypediaText, $pypediaTitle, $pypediaSection) {
 
 	print $mesg1;
 
-	pypedialog("mesg1:$mesg1<--");
+	$username = $wgUser-mName;
+	$time_now = gmdate("Y-m-d H:i:s", time());
+	pypedialog("$username|$time_now|$mesg1");
 }
 
 function pypediaAlert($pypediaText) {
@@ -1935,7 +1939,7 @@ function pypediaGetCodeFromArticle2($pypediaTitle, &$functionsMet, &$ret, $pyped
 
 //For debugging..
 function pypedialog($text) {
-	$fh = fopen("pypedia/log.txt", "a");
+	$fh = fopen("log.txt", "a");
 	fwrite($fh, $text);
 	fwrite($fh, "\n");
 	fclose($fh);
