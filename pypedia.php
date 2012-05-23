@@ -1276,7 +1276,7 @@ function pypediaError($pypediaText, $pypediaTitle, $pypediaSection) {
 
 	print $mesg1;
 
-	$username = $wgUser-mName;
+	$username = $wgUser->mName;
 	$time_now = gmdate("Y-m-d H:i:s", time());
 	pypedialog("$username|$time_now|$mesg1");
 }
