@@ -20,6 +20,8 @@
 """
 
 import sys
+import urllib2
+
 import pypedia
 
 from cStringIO import StringIO
@@ -27,26 +29,33 @@ from cStringIO import StringIO
 def exec_wiki_code():
 	#Import function
 
-	article = sys.argv[1]
-	exec("from pypedia import %s" % (article))
+#	article = sys.argv[1]
+#	exec("from pypedia import %s" % (article))
 
-	parameters = {}
-	for argument in sys.argv[2:]:
-		argument_split = argument.split("=")
-		parameter = argument_split[0]
-		value = str.join("", argument_split[1:])
+	params = urllib2.unquote(sys.argv[2])
 
-		prefix = parameter[0:4]
-		suffix = parameter[6:]
-		if prefix == "eval":
-			value = eval(value)
+	command = "%s(**{%s})" % (sys.argv[1], params)
 
-		parameters[suffix] = value
+	return eval(command)
 
-	ret = eval("%s(**%s)" % (article, str(parameters)))
+	if False:
+		parameters = {}
+		for argument in sys.argv[2:]:
+			argument_split = argument.split("=")
+			parameter = argument_split[0]
+			value = str.join("", argument_split[1:])
+
+			prefix = parameter[0:4]
+			suffix = parameter[6:]
+			if prefix == "eval":
+				value = eval(value)
+
+			parameters[suffix] = value
+
+		ret = eval("%s(**%s)" % (article, str(parameters)))
 
 
-	return ret
+		return ret
 
 
 if __name__ == "__main__":
@@ -55,20 +64,35 @@ if __name__ == "__main__":
 		print "Invalid number of arguments"
 		sys.exit(-1)
 
+	import_except_catch = None
+	command = "from pypedia import %s" % (sys.argv[1])
+	try:
+		exec(command)
+	except Exception as inst:
+		import_except_catch = str(inst)
+
 	sys.stdout = mystdout = StringIO()
 	except_catch = None
 	ret = None
 
-	try:
-		ret = exec_wiki_code()
-	except Exception as inst:
-		except_catch = str(inst)
+	if not import_except_catch:
+		try:
+			ret = exec_wiki_code()
+		except Exception as inst:
+			except_catch = str(inst)
+	else:
+		except_catch = import_except_catch
 
 	sys.stdout = sys.__stdout__
 
-	print "-------Error-------"
+#	print "<html>"
+#	print "<body>"
+	print "<b>Error:</b><pre>"
 	print except_catch
-	print "-------Printed-----"
+	print "</pre><b>Printed:</b><pre>"
 	print mystdout.getvalue()
-	print "-------Returned----"
+	print "</pre><b>Returned:</b><pre>"
 	print ret
+	print "</pre>"
+#	print "</body>"
+#	print "</html>"

@@ -47,13 +47,13 @@ $pypediaDefaultPermissions = array();
 $pypediaDefaultPermissions["Development Code Permissions"] = array();
 $pypediaDefaultPermissions["Development Code Permissions"][0] = "ALL";
 $pypediaDefaultPermissions["Documentation Permissions"] = array();
-$pypediaDefaultPermissions["Documentation Permissions"][0] = "_WPL_ARTICLE_CREATOR_";
+$pypediaDefaultPermissions["Documentation Permissions"][0] = "_PYP_ARTICLE_CREATOR_";
 $pypediaDefaultPermissions["Code Permissions"] = array();
-$pypediaDefaultPermissions["Code Permissions"][0] = "_WPL_ARTICLE_CREATOR_";
+$pypediaDefaultPermissions["Code Permissions"][0] = "_PYP_ARTICLE_CREATOR_";
 $pypediaDefaultPermissions["Unit Tests Permissions"] = array();
-$pypediaDefaultPermissions["Unit Tests Permissions"][0] = "_WPL_ARTICLE_CREATOR_";
+$pypediaDefaultPermissions["Unit Tests Permissions"][0] = "_PYP_ARTICLE_CREATOR_";
 $pypediaDefaultPermissions["Permissions Permissions"] = array();
-$pypediaDefaultPermissions["Permissions Permissions"][0] = "_WPL_ARTICLE_CREATOR_";
+$pypediaDefaultPermissions["Permissions Permissions"][0] = "_PYP_ARTICLE_CREATOR_";
 
 #$pypediaXMLRPCServerIP = "192.168.0.102";
 #$pypediaXMLRPCServerIP = "192.168.2.104";
@@ -61,7 +61,7 @@ $pypediaDefaultPermissions["Permissions Permissions"][0] = "_WPL_ARTICLE_CREATOR
 $pypediaXMLRPCServerIP = "95.142.166.55";
 
 //Default article's Structure
-$pypediaDefaultStructure = array(	0 => "_WPL_ARTICLE_",
+$pypediaDefaultStructure = array(	0 => "_PYP_ARTICLE_",
 							1 => array(
 								0 => "Documentation",
 								1 => array(
@@ -372,7 +372,7 @@ function pypediaCheckSectionPermissions($pypediaSection, $pypediaUser, $oldtext)
 // == Rules ==
 // * Only users belonging to "codeeditors" can edit complete articles
 // * Anonymous and simple users can only edit the "Development Code" section and the talk pages
-// * Only users belonging to "pypediaadmin" can edit the WPL namespace
+// * Only users belonging to "pypediaadmin" can edit the PYP namespace
 // * Only users belonging to "pypediaadmin" can edit the "Main Page"
 function pypediaEditPageAttemptSave($editpage) {
 
@@ -381,7 +381,7 @@ function pypediaEditPageAttemptSave($editpage) {
 	global $pypediaLanguageExtension;
 
 	//Who tries to edit this article?
-	//If the editor is unregistered then $pypediaUser is the editor's ip address
+	//If the editor is not signed in then $pypediaUser is the editor's ip address
 	$pypediaUser = $wgUser->mName;
 
 	//God mode. TODO: Make a special user group.
@@ -602,12 +602,14 @@ path=<pathValue> (optional default value: ./)
 
 	//Check the parameters
 	if ($ret["new Parameters"] != null) {
+
 		//There was change in the parameters section
 		$galaxyXML = pypediaGetTextinTag($ret["new Parameters"], '<source lang="xml">', '</source>');
 		if ($galaxyXML[1] != "ok") {
 			pypediaError($galaxyXML[1], $pypediaTitle, $pypediaSection);
 			return false;
 		}
+
 		$response =  pypediaGalaxyXML2HTML($galaxyXML[0], $pypediaTitle, $pypediaUser, $pypediaSection);
 		if (substr($response, 0, 5) == "Error") {
 			pypediaError("Could not parse Galaxy XML in Parameters section: " . $response, $pypediaTitle, $pypediaSection);
@@ -616,11 +618,6 @@ path=<pathValue> (optional default value: ./)
 		else {
 			$newParameters = "<!-- DO NOT EDIT HERE! AUTOMATICALLY GENERATED -->\n" . $response . "\n<!-- EDIT HERE! -->\n" . '<source lang="xml">' . $galaxyXML[0] . "\n" . "</source>\n";
 			$editpage->textbox1 = pypediaSetTextToASection($editpage->textbox1, "Parameters", $newParameters);
-			//pypediaError("-->" . $oldtext, $pypediaTitle);
-			//pypediaError("-->" . $editpage->textbox1, $pypediaTitle);
-			//pypediaError("-->" . $response, $pypediaTitle);
-			//pypediaError("-->" . $galaxyXML, $pypediaTitle);
-			//return false;
 
 		}
 	}
@@ -970,7 +967,7 @@ function pypediaGetSubStructureFromSection($structure, $section, &$count, &$leve
 
 	foreach ($structure as $substructure) {
 		if (is_string($substructure)) {
-			if ($substructure == "_WPL_ARTICLE_") continue;
+			if ($substructure == "_PYP_ARTICLE_") continue;
 			$count++;
 			if ($count == $section) {
 				return $structure;
@@ -992,7 +989,7 @@ function pypediaGetTitleOfSectionFromStructure($structure, $i, &$count, $level) 
 
 	foreach ($structure as $section) {
 		if (is_string($section)) {
-			if ($section == "_WPL_ARTICLE_") continue;
+			if ($section == "_PYP_ARTICLE_") continue;
 			$count++;
 			if ($count == $i) {
 				return str_repeat("=", $level) . $section . str_repeat("=", $level);
@@ -1029,7 +1026,7 @@ function pypediaGetSizeOfStructure($structure, &$numberOfSections) {
 
 	foreach ($structure as $section) {
 		if (is_string($section)) {
-			if ($section == "_WPL_ARTICLE_") {
+			if ($section == "_PYP_ARTICLE_") {
 				continue;
 			}
 			$numberOfSections++;
@@ -1079,7 +1076,7 @@ function pypediaFromPermissionsArrayToString($permissionsArray, $pypediaUser) {
 	$ret = "";
 
 	foreach($permissionsArray as $user) {
-		if ($user == "_WPL_ARTICLE_CREATOR_") {
+		if ($user == "_PYP_ARTICLE_CREATOR_") {
 			if (pypediaCheckIfUserIsIP($pypediaUser)) {
 				$toString = "ALL";
 			}
@@ -1116,7 +1113,7 @@ function pypediaMakePrefilTextFromStructure($structure, $title, $permissions, $l
 
 	foreach ($structure as $section) {
 		if (is_string($section)) {
-			if ($section == "_WPL_ARTICLE_") { 
+			if ($section == "_PYP_ARTICLE_") { 
 				$ret = "{{#form:action=<nowiki>$wgServer$wgScriptPath/extensions/PyPedia_server/pypdownload.php</nowiki>|method=post|target=_blank|id=header_form|enctype=multipart/form-data}}{{#input:type=hidden|name=article_title|value=$title_real}}{{#input:type=hidden|name=pyp_username|value={{CURRENTUSER}}}}{{#input:type=ajax|value=Fork this article|id=fa}}{{#formend:}}
 ";
 				continue; 
@@ -1481,7 +1478,13 @@ function pypediaGalaxyXML2HTML($galaxyXML, $pypediaTitle, $pypediaUser, $pypedia
 	//Iterate through the generated structure
 	$ret = "{{#form:action=<nowiki>$wgServer$wgScriptPath/extensions/PyPedia_server/pypdownload.php</nowiki>|method=post|target=_blank|id=parameters_form|enctype=multipart/form-data}} 
 <p>";
-	foreach ($parsed->param as $param) {
+	//foreach ($parsed->param as $param) {
+	foreach ($parsed->children() as $param) {
+
+		if ($param->getName() != "param") {
+			return "Error: Unknown xml element: {$param->getName()}. Only 'param' is allowed";
+		}
+
 		$ret .= $param["label"];
 
 		$selections = "";
@@ -1505,7 +1508,7 @@ function pypediaGalaxyXML2HTML($galaxyXML, $pypediaTitle, $pypediaUser, $pypedia
 				break;
 			}
 			case "file" : {
-				$ret .= "{{#input:type=file";
+				$ret .= "{{#input:type=file|onchange=upload_file(this.files,this.value)";
 				$prefix = "file__";
 				break;
 			}
@@ -1935,6 +1938,113 @@ function pypediaGetCodeFromArticle2($pypediaTitle, &$functionsMet, &$ret, $pyped
 	}
 
 	return true;
+}
+
+function pypedia_SSH_Connect($username, $password, &$user_ssh_path) {
+
+	include 'pw.php';
+
+	$link = mysql_connect('localhost', $wgDBuser, $wgDBpassword);
+	if (!$link) {
+		return "Could not connect: " . mysql_error();
+	}
+
+	//Connected successfully
+
+	if (!mysql_select_db($wgDBname)) {
+		return "Unable to select database";
+	}
+
+	$query = "SELECT user_ssh_host , user_ssh_username , user_ssh_port , user_ssh_path FROM {$wgDBprefix}user WHERE user_name LIKE '$username'";
+
+	$result=mysql_query($query);
+
+	$num=mysql_numrows($result);
+
+	if ($num == 0) {
+		return "You have to be logged in in order to be able to execute methods";
+	}
+
+
+	$user_ssh_host     = mysql_result($result, 0, "user_ssh_host");
+	$user_ssh_username = mysql_result($result, 0, "user_ssh_username");
+	$user_ssh_port     = mysql_result($result, 0, "user_ssh_port");
+	$user_ssh_path     = mysql_result($result, 0, "user_ssh_path");
+
+	if (trim($user_ssh_host) == "") {
+		return "You haven't filled in ssh hostname, username and password. Read the documentation about how you can do that";
+	}
+
+	//$temp1 = $user_ssh_host . ' ' . $user_ssh_username . ' ' . $user_ssh_password . ' ' . $user_ssh_port . ' ' . $user_ssh_path;
+
+	mysql_close($link);
+
+	//Through ssh Connection
+	if(!($con = ssh2_connect($user_ssh_host, $user_ssh_port))){
+		return "fail: unable to establish connection\n";
+	}
+	else {
+		// try to authenticate with username root, password secretpassword
+		if(!ssh2_auth_password($con, $user_ssh_username, $password)) {
+			return "fail: unable to authenticate\n";
+		}
+	}
+		
+	return $con;
+}
+
+function pypedia_SSH_upload_file($filename, $data, $username, $password) {
+
+	//Connect
+	$user_ssh_path = "";
+	$con = pypedia_SSH_Connect($username, $password, $user_ssh_path);
+	if (is_string($con)) {
+		return $con;
+	}
+
+	$path_parts = pathinfo(str_replace('\\', '/', $filename));
+
+	$local_filename = "/tmp/" . session_id() . "_" . $path_parts['filename'] . $path_parts['extension'];
+
+	$fw = fopen($local_filename, 'w');
+	fwrite($fw, base64_decode(substr($data, strpos($data, ',') + 1, strlen($data))));
+	fclose($fw);
+
+	if (!ssh2_scp_send($con, $local_filename, $user_ssh_path . "/" . $path_parts['filename'] . $path_parts['extension'], 0644)) {
+		return "Could not upload file (ssh2_scp_send failed). Does the directory: $user_ssh_path exists?";
+	}
+	fclose($con);
+	return "File: ". $path_parts['filename'] . $path_parts['extension'] . ' uploaded ';
+
+}
+
+//Execute code to remote computer via SSH
+function pypedia_SSH_Execute($article_name, $username, $password, $params) {
+
+	//Connect
+	$user_ssh_path = "";
+	$con = pypedia_SSH_Connect($username, $password, $user_ssh_path);
+	if (is_string($con)) {
+		return $con;
+	}
+
+	$remote_command = "cd $user_ssh_path ; python ssh_pyp_client.py  $article_name " . '"' . $params . '"';
+
+	//return $remote_command;
+	
+	if (!($stream = ssh2_exec($con, $remote_command ))) {
+		return "fail: unable to execute remote command (ssh2_exec)\n";
+	}
+
+	stream_set_blocking($stream, true);
+	$data = "";
+	while ($buf = fread($stream,4096)) {
+		$data .= $buf;
+	}
+	
+	fclose($stream);
+
+	return $data;
 }
 
 //For debugging..
