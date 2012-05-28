@@ -46,20 +46,10 @@
 				var par_elem = document.getElementById('parameters_form');
 				var elem = par_elem.elements;
 				var username = '';
-//				var password = '';
 				for (var i = 0; i < elem.length; i++) {
 					if (elem[i].name == 'pyp_username') {username = elem[i].value;}
 				}
 
-//				pw_elem = document.getElementById('password_input');
-//				if (!pw_elem) {
-//					pyp_show_message("To upload a file, first you need to enter the password to the remote computer. Press 'Execute on remote computer'to enter the password", 'cc3333');
-//					par_elem.innerHTML += "  ";
-//					return;
-//				}
-				
-//				password = pw_elem.value;
-	
 				if (files.length === 0) {return;}
 				var file = files[0];
 
@@ -144,58 +134,16 @@
 							new_div.innerHTML = to_add;
 							var parameters_form = document.getElementById('parameters_form');
 							parameters_form.parentNode.insertBefore(new_div, parameters_form.nextSibling);
-//							document.getElementById('parameters_form').parentNode.innerHTML += to_add;
-//							document.getElementById('parameters_form').innerHTML += to_add;
                       				}
 					}
 					else if (clicked_id == 'eorcg') {
 						
 						var form_elems = pyp_get_execution_command(clicked_id);
-						//var auri = 'index.php?ssh_code=' + encodeURIComponent(form_elems[0]) + "&username=" + encodeURIComponent(form_elems[1]) + "&password=" + encodeURIComponent(form_elems[2]) +  "&params=" + encodeURIComponent(form_elems[3]);
-						//pyp_show_message(auri, 'f5faff');
 						var password = document.getElementById('password_input').value;
 
 						//Upload files from local to remote
 						var filenames = form_elems[3];
 						pyp_upload_remote(filenames, form_elems[1], password, 0, filenames, form_elems[0], form_elems[2]);
-//						var upload_done = [];
-//						for (var i=0; i<filenames.length; i++) {upload_done.push(0)}
-//						for (var i=0; i<filenames.length; i++) {
-//							pyp_show_message('Uploading file: ' + filenames[i] + ' remotely ..', 'f4faff');
-//							request = $.ajax({
-//								url: 'index.php',
-//								data: {ul_remote: encodeURIComponent(filenames[i]), username : encodeURIComponent(form_elems[1]), password : encodeURIComponent(password)},
-//								success: (function (data){
-//									pyp_show_message(data, 'f4faff');
-//									upload_done[i] = 1;
-//									}),
-//								error: (function(){pyp_show_message('Could not upload file: ' + filenames[i] + ' remotely', 'cc3333');}),
-//								dataType: 'text',
-//								type: 'post'
-//							});
-//						}
-
-						//A very inefficient way for waiting for the files to be uploaded..
-						//Make everything scheduled..
-//						while (1<2) {
-//							var sum_done = 0;
-//							for (var i=0; i<filenames.length; i++) {
-//								if (upload_done[i] == 1) { sum_done += 1 };
-//							}
-//							if (sum_done == filenames.length) { break; }
-//						}
-
-//						pyp_show_message('Executing remotely ..', 'f4faff');
-//						//Execute remote command
-//						request = $.ajax({
-//							url: 'index.php',
-//							data: {ssh_code : encodeURIComponent(form_elems[0]), username : encodeURIComponent(form_elems[1]), password : encodeURIComponent(password), params : encodeURIComponent(form_elems[2])},
-//							success: (function (data){pyp_show_message(data, 'f4faff');}),
-							//success: (function() {}),
-//							error: (function(){pyp_show_message('Could not execute REST api', 'cc3333');}),
-//							dataType: 'text',
-//							type: 'post'
-//						});
 					}
 					else if ((clicked_id == 'eob') || clicked_id == 'eobm') {
 						var command = '';

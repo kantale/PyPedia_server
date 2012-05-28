@@ -156,13 +156,7 @@ if ($raw_code) {
 	$article_name = urldecode($raw_code);
 	$username = urldecode($wgRequest->getVal( 'username' ));
 	$password = urldecode($wgRequest->getVal( 'password' ));
-//	$params = urldecode($wgRequest->getVal( 'params' ));
 	$params = $wgRequest->getVal( 'params' );
-//	$filenames = urldecode($wgRequest->getVal( 'filenames' ));
-
-//	print $article_name . ' ' . $username . ' ' . $password . ' ' . $params;
-//	print $filenames;
-//	print "nothing";
 
 	$ret = pypedia_SSH_Execute($article_name, $username, $password, $params);
 	print $ret;
@@ -175,7 +169,6 @@ if ($raw_code) {
 	$filename = urldecode($raw_code);
 	$data = urldecode($wgRequest->getVal( 'data' ));
 	$username = urldecode($wgRequest->getVal( 'username' ));
-//	$password = urldecode($wgRequest->getVal( 'password' ));
 	print pypedia_SSH_upload_file_local($filename, $data, $username);
 	exit;
 }

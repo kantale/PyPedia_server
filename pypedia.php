@@ -1995,26 +1995,18 @@ function pypedia_SSH_Connect($username, $password, &$user_ssh_path) {
 
 function pypedia_SSH_upload_file_local($filename, $data, $username, $password) {
 
-	//Connect
-//	$user_ssh_path = "";
-//	$con = pypedia_SSH_Connect($username, $password, $user_ssh_path);
-//	if (is_string($con)) {
-//		return $con;
-//	}
-
 	$path_parts = pathinfo(str_replace('\\', '/', $filename));
+	if (strlen($path_parts['extension']) > 0) {
+		$path_parts['extension'] = '.' . $path_parts['extension'];
+	}
 
-	$local_filename = "/tmp/" . session_id() . "_" . $path_parts['filename'] . "." . $path_parts['extension'];
+	$local_filename = "/tmp/" . session_id() . "_" . $path_parts['filename'] . $path_parts['extension'];
 
 	$fw = fopen($local_filename, 'w');
 	fwrite($fw, base64_decode(substr($data, strpos($data, ',') + 1, strlen($data))));
 	fclose($fw);
 
-//	if (!ssh2_scp_send($con, $local_filename, $user_ssh_path . "/" . $path_parts['filename'] . $path_parts['extension'], 0644)) {
-//		return "Could not upload file (ssh2_scp_send failed). Does the directory: $user_ssh_path exists?";
-//	}
-//	fclose($con);
-	return "File: ". $path_parts['filename'] . "." . $path_parts['extension'] . ' uploaded locally';
+	return "File: ". $path_parts['filename'] . $path_parts['extension'] . ' uploaded locally';
 
 }
 
@@ -2027,15 +2019,18 @@ function pypedia_SSH_upload_file_remote($filename, $username, $password) {
 	}
 
 	$path_parts = pathinfo(str_replace('\\', '/', $filename));
-	$local_filename = "/tmp/" . session_id() . "_" . $path_parts['filename'] . "." . $path_parts['extension'];
+	if (strlen($path_parts['extension']) > 0) {
+		$path_parts['extension'] = '.' . $path_parts['extension'];
+	}
+	$local_filename = "/tmp/" . session_id() . "_" . $path_parts['filename'] . $path_parts['extension'];
 
-	if (!ssh2_scp_send($con, $local_filename, $user_ssh_path . "/" . $path_parts['filename'] . "." . $path_parts['extension'], 0644)) {
+	if (!ssh2_scp_send($con, $local_filename, $user_ssh_path . "/" . $path_parts['filename'] . $path_parts['extension'], 0644)) {
 		return "Could not upload file (ssh2_scp_send failed). Does the directory: $user_ssh_path exists?";
 	}
 	ssh2_exec($con, 'exit'); 
 	fclose($con);
 
-	return "File: ". $path_parts['filename'] . "." . $path_parts['extension'] . ' uploaded remotely';
+	return "File: ". $path_parts['filename'] . $path_parts['extension'] . ' uploaded remotely';
 }
 
 //Execute code to remote computer via SSH
