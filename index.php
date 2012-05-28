@@ -162,6 +162,7 @@ if ($raw_code) {
 
 //	print $article_name . ' ' . $username . ' ' . $password . ' ' . $params;
 //	print $filenames;
+//	print "nothing";
 
 	$ret = pypedia_SSH_Execute($article_name, $username, $password, $params);
 	print $ret;
@@ -174,10 +175,20 @@ if ($raw_code) {
 	$filename = urldecode($raw_code);
 	$data = urldecode($wgRequest->getVal( 'data' ));
 	$username = urldecode($wgRequest->getVal( 'username' ));
-	$password = urldecode($wgRequest->getVal( 'password' ));
-	print pypedia_SSH_upload_file($filename, $data, $username, $password);
+//	$password = urldecode($wgRequest->getVal( 'password' ));
+	print pypedia_SSH_upload_file_local($filename, $data, $username);
 	exit;
 }
+
+$raw_code = $wgRequest->getVal( 'ul_remote' );
+if ($raw_code) {
+	$filename = urldecode($raw_code);
+	$username = urldecode($wgRequest->getVal( 'username' ));
+	$password = urldecode($wgRequest->getVal( 'password' ));
+	print pypedia_SSH_upload_file_remote($filename, $username, $password);
+	exit;
+}
+
 // \PYPEDIA
 
 $mediaWiki->run();
