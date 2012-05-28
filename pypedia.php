@@ -1965,14 +1965,13 @@ function pypedia_SSH_Connect($username, $password, &$user_ssh_path) {
 		return "You have to be logged in in order to be able to execute methods";
 	}
 
-
 	$user_ssh_host     = mysql_result($result, 0, "user_ssh_host");
 	$user_ssh_username = mysql_result($result, 0, "user_ssh_username");
 	$user_ssh_port     = mysql_result($result, 0, "user_ssh_port");
 	$user_ssh_path     = mysql_result($result, 0, "user_ssh_path");
 
 	if (trim($user_ssh_host) == "") {
-		return "You haven't filled in ssh hostname, username and password. Read the documentation about how you can do that";
+		return "You haven't filled in ssh hostname, username and password. Read the <a href=\"http://www.pypedia.com/index.php/Pypedia:Documentation#.22Execute_on_remote_computer.22_button\">documentation</a> about how you can do that.";
 	}
 
 	//$temp1 = $user_ssh_host . ' ' . $user_ssh_username . ' ' . $user_ssh_password . ' ' . $user_ssh_port . ' ' . $user_ssh_path;
