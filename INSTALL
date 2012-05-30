@@ -13,6 +13,9 @@ Step 0: Install MediaWiki
 Before you install make sure that you have installed / updated 
 the following packages:
 
+apt-get install apache2
+apt-get install php5
+apt-get install libapache2-mod-php5
 apt-get install mysql-server
 apt-get install php5-mysql
 apt-get install make
