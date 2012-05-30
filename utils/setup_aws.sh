@@ -44,7 +44,7 @@ cd /home/ubuntu/scipy; python setup.py build; cd
 cd /home/ubuntu/scipy; sudo python setup.py install; cd
 
 
-wget biopython-1.59.tar.gz
+wget http://biopython.org/DIST/biopython-1.59.tar.gz
 tar zxvf biopython-1.59.tar.gz 
 cd /home/ubuntu/biopython-1.59; python setup.py build; cd
 cd /home/ubuntu/biopython-1.59; sudo python setup.py install; cd
