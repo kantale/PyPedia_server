@@ -21,7 +21,7 @@ cd /home/pypuser/run; sudo git clone git://github.com/kantale/pypedia.git
 cd /home/pypuser/run; sudo wget https://raw.github.com/kantale/PyPedia_server/master/utils/ssh_pyp_client.py
 cd 
 
-sudo chown pypuser sudo chown pypuser /home/pypuser/run/pypedia/pypCode/
+sudo chown pypuser /home/pypuser/run/pypedia/pypCode/
 
 wget http://pypi.python.org/packages/source/s/setuptools/setuptools-0.6c11.tar.gz#md5=7df2a529a074f613b509fb44feefe74e
 tar zxvf setuptools-0.6c11.tar.gz
