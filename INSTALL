@@ -45,12 +45,12 @@ Step 1: Alter MediaWiki table schema
 Login in mysql using the root account that you declared during installation,
 go to the database where your wiki is stored (also declared during installation)
 Execute the following commands:
-(Substitute "wpl_" with the prefix of the wiki tables, given at the mediawiki installation)
+(Substitute "pyp_" with the prefix of the wiki tables, given at the mediawiki installation)
 
-ALTER TABLE wpl_user ADD user_ssh_host varbinary(255);
-ALTER TABLE wpl_user ADD user_ssh_username varbinary(255) ;
-ALTER TABLE wpl_user ADD user_ssh_port varbinary(255) ;
-ALTER TABLE wpl_user ADD user_ssh_path varbinary(255) ;
+ALTER TABLE pyp_user ADD user_ssh_host varbinary(255);
+ALTER TABLE pyp_user ADD user_ssh_username varbinary(255) ;
+ALTER TABLE pyp_user ADD user_ssh_port varbinary(255) ;
+ALTER TABLE pyp_user ADD user_ssh_path varbinary(255) ;
 
 
 ------------------------------------------------------------------
@@ -108,14 +108,14 @@ STEP 5: Create file with passwords
 
 Create a file pw.php in the root directory of the mediawiki installation.
 write to the file: (Copy the XXX files from the values found in LocalSettings.php, except 
-$wgDBpreffix which is the preffix of the table names)
+$wgDBprefix which is the preffix of the table names)
 
 <?php
 ## Database settings
 $wgDBtype           = "XXX";
 $wgDBserver         = "XXX";
 $wgDBname           = "XXX";
-$wgDBpreffix        = "XXX";
+$wgDBprefix         = "XXX";
 $wgDBuser           = "XXX";
 $wgDBpassword       = "XXX";
 ?>
