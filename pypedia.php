@@ -244,6 +244,9 @@ function pypediaCheckIfEditIsAllowed($editpage) {
 
 	//Admins are allowed to do anything except what PyPedia forbids
 	if ($pypediaIsPypediaadmin) {
+		if ($pypediaTitle == "Main Page") {
+			return "ok";
+		}
 		return "proceed";
 	}
 
@@ -450,8 +453,6 @@ function pypediaEditPageAttemptSave($editpage) {
 		pypediaError($message, $pypediaTitle, $pypediaSection);
 		return false;
 	}
-
-
 
 	//If the user is pypediaadmin (God mode). Is allowed to do anything. (We assume he knows what he does)
 //	if ($pypediaIsPypediaadmin) {
