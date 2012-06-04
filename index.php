@@ -71,6 +71,7 @@ if ($raw_code) {
 }
 $raw_code = $wgRequest->getVal( 'dl_code' );
 if ($raw_code) {
+	$raw_code = urldecode($raw_code);
 	$pos1 = strpos($raw_code, "=") + 1;
 	$pos2 = strpos($raw_code, "(");
 	if ($pos1 === false || $pos2 === false) {
@@ -185,3 +186,4 @@ if ($raw_code) {
 // \PYPEDIA
 
 $mediaWiki->run();
+

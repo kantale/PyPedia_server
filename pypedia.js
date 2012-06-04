@@ -34,7 +34,7 @@
 							return 'print "Output:<pre>"\n_=' + article_name + '(**{' + params + '})\nprint "</pre>"\nif _ != None: print "Returned:<pre>%s</pre>" % str(_)';
 						}
 						if (clicked_id == 'dc') {
-							return '_=' + article_name + '(**{' + params + '})\nif _ != None: print "Method returned:\\n%s" % str(_)';
+							return '_=' + article_name + '(**{' + params + '})\nif _ != None: print "Method returned:\\n%s" % str(_)\n';
 						}
 						if (clicked_id == 'eorcg') {
 							return [article_name, username, params, filenames];
@@ -124,6 +124,8 @@
 					if (clicked_id == 'dc') {
 						var command = pyp_get_execution_command(clicked_id);
 						var auri = 'index.php?dl_code=' + encodeURIComponent(command);
+						var local_uri = 'http://www.pypedia.com/' + auri;
+						pyp_show_message('URL: <a href="' + local_uri + '">' + local_uri + '</a>\nwget command: wget -O code.py "' + local_uri + '"', 'f5faff');
 						window.open(auri, '_blank');
 					}
 					else if (clicked_id == 'eorc') {
