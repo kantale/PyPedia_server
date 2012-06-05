@@ -617,7 +617,7 @@ path=<pathValue> (optional default value: ./)
 			return false;
 		}
 		else {
-			$newParameters = "<!-- DO NOT EDIT HERE! AUTOMATICALLY GENERATED -->\n" . $response . "\n<!-- EDIT HERE! -->\n" . '<source lang="xml">' . $galaxyXML[0] . "\n" . "</source>\n";
+			$newParameters = "<!-- DO NOT EDIT HERE! AUTOMATICALLY GENERATED -->\n" . $response . "\n<!-- EDIT HERE! -->\n" . '<source lang="xml">' . $galaxyXML[0] . "</source>\n";
 			$editpage->textbox1 = pypediaSetTextToASection($editpage->textbox1, "Parameters", $newParameters);
 
 		}
