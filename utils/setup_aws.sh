@@ -14,6 +14,7 @@ sudo /etc/init.d/ssh reload
 
 sudo reload ssh
 
+sudo apt-get update
 sudo apt-get -y install git
 
 sudo mkdir /home/pypuser/run
@@ -43,6 +44,7 @@ git clone git://github.com/scipy/scipy.git scipy
 cd /home/ubuntu/scipy; python setup.py build; cd
 cd /home/ubuntu/scipy; sudo python setup.py install; cd
 
+sudo apt-get -y install python-matplotlib
 
 wget http://biopython.org/DIST/biopython-1.59.tar.gz
 tar zxvf biopython-1.59.tar.gz 
