@@ -35,15 +35,8 @@ sudo apt-get -y install python-dev
 sudo apt-get -y install gfortran
 sudo apt-get -y install libatlas-base-dev
 sudo apt-get -y install g++
-
-git clone git://github.com/numpy/numpy.git numpy
-cd /home/ubuntu/numpy; python setup.py build --fcompiler=gnu95; cd
-cd /home/ubuntu/numpy; sudo python setup.py install; cd
-
-git clone git://github.com/scipy/scipy.git scipy
-cd /home/ubuntu/scipy; python setup.py build; cd
-cd /home/ubuntu/scipy; sudo python setup.py install; cd
-
+sudo apt-get -y install python-numpy
+sudo apt-get -y install python-scipy
 sudo apt-get -y install python-matplotlib
 
 wget http://biopython.org/DIST/biopython-1.59.tar.gz
