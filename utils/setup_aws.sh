@@ -39,6 +39,8 @@ sudo apt-get -y install python-numpy
 sudo apt-get -y install python-scipy
 sudo apt-get -y install python-matplotlib
 
+sudo sed -i 's/^backend[ \t]*:.*$/backend : Agg/g' `python -c 'import matplotlib; print matplotlib.matplotlib_fname()'`
+
 wget http://biopython.org/DIST/biopython-1.59.tar.gz
 tar zxvf biopython-1.59.tar.gz 
 cd /home/ubuntu/biopython-1.59; python setup.py build; cd
