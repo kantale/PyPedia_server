@@ -38,26 +38,6 @@ def exec_wiki_code():
 
 	return eval(command)
 
-	if False:
-		parameters = {}
-		for argument in sys.argv[2:]:
-			argument_split = argument.split("=")
-			parameter = argument_split[0]
-			value = str.join("", argument_split[1:])
-
-			prefix = parameter[0:4]
-			suffix = parameter[6:]
-			if prefix == "eval":
-				value = eval(value)
-
-			parameters[suffix] = value
-
-		ret = eval("%s(**%s)" % (article, str(parameters)))
-
-
-		return ret
-
-
 if __name__ == "__main__":
 
 	if len(sys.argv) < 2:
@@ -65,7 +45,8 @@ if __name__ == "__main__":
 		sys.exit(-1)
 
 	import_except_catch = None
-	command = "from pypedia import %s" % (sys.argv[1])
+	command = "try:\n\timport numpy\nexcept ImportError:\n\tpass\n" #Try to import numpy
+	command += "from pypedia import %s" % (sys.argv[1])
 	try:
 		exec(command)
 	except Exception as inst:
