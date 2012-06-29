@@ -281,6 +281,9 @@ function pypediaCheckIfEditIsAllowed($editpage) {
 	if ($pypediaNamespace != "") {
 		if ($pypediaNamespace  % 2 == 0) {//This is not a talk page
 			if ($pypediaNamespace == 2) { //This is a User page
+				if ($pypediaIsPypediaadmin == 1) {
+ 					return "ok";
+ 				}
 				if ($pypediaUser != $pypediaTitle) {
 					return "You are not allowed to edit someone else's User page";
 				}
