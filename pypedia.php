@@ -281,9 +281,6 @@ function pypediaCheckIfEditIsAllowed($editpage) {
 	if ($pypediaNamespace != "") {
 		if ($pypediaNamespace  % 2 == 0) {//This is not a talk page
 			if ($pypediaNamespace == 2) { //This is a User page
-				if ($pypediaIsPypediaadmin == 1) {
- 					return "ok";
- 				}
 				if ($pypediaUser != $pypediaTitle) {
 					return "You are not allowed to edit someone else's User page";
 				}
@@ -543,7 +540,7 @@ path=<pathValue> (optional default value: ./)
 					//pypediaError("New credentials were stored", "Main_Page");
 				}
 			}
-			else {
+			else if (!$pypediaIsPypediaadmin) {
 				pypediaError("You are not allowed to change someone else's page", $pypediaTitle, $pypediaSection);
 				return false;
 			}
