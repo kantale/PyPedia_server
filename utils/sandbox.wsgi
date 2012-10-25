@@ -60,8 +60,41 @@ be directed here and not to pypediacode.appspot.com
 
 from cgi import parse_qs, escape
 
+import sys
 import json
 import urllib2
+import StringIO
+import traceback
+
+from sandbox import Sandbox, SandboxConfig
+
+sandbox_configuration = SandboxConfig('stdout', 'keepOutput')
+sandbox = Sandbox(sandbox_configuration)
+
+
+def sandbox_exec_call(the_code):
+  exec(the_code, {})
+
+def sandbox_exec_code(the_code):
+  
+  data = {}
+
+  try:
+    std_stdout = sys.stdout
+    sys.stdout = StringIO.StringIO()
+    sandbox.execute(the_code)
+    data['text'] = sys.stdout.getvalue()
+  except Exception, e:
+    exception_data = StringIO.StringIO()
+    traceback.print_exc(file=exception_data)
+    exception_data.seek(0)
+    data['output'] = "exception"
+    data['text'] = "%s\r\n" % exception_data.read()
+  finally:
+    sys.stdout = std_stdout
+    std_stdout = None # Clear reference for protection
+
+  return data
 
 def application(environ, start_response):
 
@@ -90,7 +123,19 @@ def application(environ, start_response):
 #   text = d.get('text', [''])[0] # Get the age value
 #   text = escape(text) # Avoid script injection
 
-   response_body = json.dumps({"text" : text})
+#   response_body = json.dumps(sandbox_exec(text))
+
+   try:
+      returned = sandbox.call(sandbox_exec_call, text)
+      output = {'text' : returned['output']}
+   except Exception, e:
+      exception_data = StringIO.StringIO()
+      traceback.print_exc(file=exception_data)
+      exception_data.seek(0)
+      to_print = "%s\r\n" % exception_data.read()
+      output = {'output' : 'exception', 'text': to_print}
+
+   response_body = json.dumps(output)
    
    status = '200 OK' 
 
