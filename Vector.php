@@ -73,7 +73,9 @@ class VectorTemplate extends BaseTemplate {
 	 * Outputs the entire contents of the (X)HTML page
 	 */
 	public function execute() {
+		// PYPEDIA
 		global $wgServer, $wgScriptPath;
+		// \PYPEDIA
 		global $wgLang, $wgVectorUseIconWatch;
 
 		$this->skin = $this->data['skin'];
