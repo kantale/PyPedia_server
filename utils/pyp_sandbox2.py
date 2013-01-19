@@ -9,12 +9,9 @@ import urllib
 import json
 import sys
 
+from multiprocessing import Process, Queue
 
-import threading
-import Queue
-
-
-from multiprocessing import Process
+from Queue import Empty
 
 def run_unsafe_code(the_code, output_queue):
      	temp_stdout = sys.stdout
@@ -37,74 +34,23 @@ def run_unsafe_code(the_code, output_queue):
         output_queue.put(data)
 
 def exec_timed_process(the_code, time_limit):
-    temp_stdout = sys.stdout
-    output_queue = Queue.Queue()
+    output_queue = Queue()
     p = Process(target=run_unsafe_code, args=(the_code, output_queue,))
 
     p.start()
-    p.join(time_limit)
-    if p.is_alive():
-    	print 'Still alive to mpourdelo'
-    	sys.stdout = temp_stdout
+#    p.join(time_limit)
+    
+    try:	
+        data = output_queue.get(timeout = time_limit)
+    except Empty:
     	p.terminate()
-    	return {'output' : 'exception', 'text' : 'Time out limit reached'}
-    else:
-    	print 'stamatise to mpourdelo'
-    	data = output_queue.get()
-    	print data
-    	return data
+    	data = {'output' : 'exception', 'text' : 'Time out limit reached'}
 
-
-
-class ThreadClass(threading.Thread):
-
-    def __init__(self, the_code, output_queue):
-        threading.Thread.__init__(self)
-        self.the_code = the_code
-        self.output_queue = output_queue
-
-    def run(self):
-     	temp_stdout = sys.stdout
-    	sys.stdout = StringIO.StringIO()
-
-        data = {}
-        data["output"] = "text"
-
-        try:
-        	exec(self.the_code, {})
-        	data["text"] = sys.stdout.getvalue()
-        except Exception, e:
-            exception_data = StringIO.StringIO()
-            traceback.print_exc(file=exception_data)
-            exception_data.seek(0)
-            data["output"] = "exception"
-            data["text"] = "%s\r\n" % exception_data.read()     
-
-        sys.stdout = temp_stdout
-        self.output_queue.put(data)
-
-def exec_timed_thread(the_code, time_limit):
-
-    output_queue = Queue.Queue()
-    temp_stdout = sys.stdout
-
-    t = ThreadClass(the_code, output_queue)
-
-    t.start()
-#    t.join(float(time_limit))
-    if t.is_alive():
-        sys.stdout = temp_stdout
-
-        print 'Still alive to mpourdelo'
-
-    else:
-        print 'Epestrepse:'
-        print output_queue.get()
-
-    return
-
+    return data
 
 class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+
+    time_limit = 5
 
     def do_POST(self):
         #Same code as in appspot
@@ -125,19 +71,7 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         #parsed = urlparse.parse_qs(post_body)
         #print parsed
 
-        data = {}
-        data["output"] = "text"
-
-        try:
-            exec(cmd, {})
-            data["text"] = sys.stdout.getvalue()
-
-        except Exception, e:
-            exception_data = StringIO.StringIO()
-            traceback.print_exc(file=exception_data)
-            exception_data.seek(0)
-            data["output"] = "exception"
-            data["text"] = "%s\r\n" % exception_data.read()
+        data = exec_timed_process(cmd, self.time_limit)
 
         sys.stdout = temp_stdout
         print "data: %s" % json.dumps(repr(data))
@@ -158,15 +92,10 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 def main():
 
 	PORT = 8080
-
 	httpd = SocketServer.TCPServer(("", PORT), P_handler)
 
-#	print "serving at port", PORT
-#	httpd.serve_forever()
-
-#	exec_timed_thread('while True: a = 1+2\n', 2)
-
-	exec_timed_process('print 3', 2)
+	print "serving at port", PORT
+	httpd.serve_forever()
 
 
 if __name__ == '__main__':
