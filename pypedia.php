@@ -247,7 +247,8 @@ function pypediaCheckIfEditIsAllowed($editpage) {
 		if ($pypediaTitle == "Main Page") {
 			return "ok";
 		}
-		return "proceed";
+		//return "proceed";
+		return "ok";
 	}
 
 	//What was the previous content of the page?
@@ -388,9 +389,9 @@ function pypediaEditPageAttemptSave($editpage) {
 	$pypediaUser = $wgUser->mName;
 
 	//God mode. TODO: Make a special user group.
-	if ($pypediaUser == "WikiSysop") {
-		return true;
-	}
+	//if ($pypediaUser == "WikiSysop") {
+	//	return true;
+	//}
 
 	//The title of the edited article
 	$pypediaTitle = $editpage->mTitle->getText();
