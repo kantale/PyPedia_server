@@ -58,8 +58,10 @@ STEP 2: Install PyPedia_server
 ------------------------------------------------------------------
 Go to the /extensions directory of the MediaWiki installation and run:
 
-git clone git@github.com:kantale/PyPedia_server.git
+git clone https://github.com/kantale/PyPedia_server.git
 
+Got to the /extensions/PyPedia_server directory
+https://gerrit.wikimedia.org/r/p/mediawiki/extensions/MyVariables.git
 
 ------------------------------------------------------------------
 STEP 3: Change LocalSettings.php

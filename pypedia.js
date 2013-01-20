@@ -158,7 +158,8 @@
 							data: {get_code : command } ,
 							success: (function (data) {
 								request2 = $.ajax({
-									url: 'http://pypediacode.appspot.com',
+									// url: 'http://pypediacode.appspot.com',
+									url: 'http://83.212.107.58:8080',
 									data: encodeURIComponent(data),
 									success: (function (data){pyp_show_message(data['text'], 'f5faff');}),
 									error: (function(){pyp_show_message('Could not contact appspot', 'cc3333');}),
