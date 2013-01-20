@@ -1,5 +1,4 @@
 
-
 import SimpleHTTPServer
 import SocketServer
 import traceback
@@ -78,7 +77,7 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         self.send_response(200) 
 
-        self.send_header("Access-Control-Allow-Origin", "http://83.212.107.55")
+        self.send_header("Access-Control-Allow-Origin", "http://www.pypedia.com")
         self.send_header("Access-Control-Request-Method", "POST, GET")
         self.send_header("Access-Control-Max-Age", "1728000")
 
