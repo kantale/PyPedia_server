@@ -61,7 +61,7 @@ $pypediaDefaultPermissions["Permissions Permissions"][0] = "_PYP_ARTICLE_CREATOR
 $pypediaXMLRPCServerIP = "95.142.166.55";
 
 //$pypediaSandbox = http://pypediacode.appspot.com
-$pypediaSandbox = 'http://83.212.107.58:8080'
+$pypediaSandbox = 'http://83.212.107.58:8080';
 
 //Default article's Structure
 $pypediaDefaultStructure = array(	0 => "_PYP_ARTICLE_",
