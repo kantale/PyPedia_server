@@ -158,6 +158,8 @@ Edit pypedia.js and change the line:
 With your google application. i.e:
  url: 'http://myapplication.appspot.com',
 
+Edit pypedia.php and change respectively the value of the variable: $pypediaSandbox (at the beggining of the file)
+
 Now you should have a python sandbox running in Google appengine.
 To test: Run a script from the front page of your wiki. 
 
