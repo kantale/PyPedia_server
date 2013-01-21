@@ -60,6 +60,9 @@ $pypediaDefaultPermissions["Permissions Permissions"][0] = "_PYP_ARTICLE_CREATOR
 #$pypediaXMLRPCServerIP = "127.0.0.1";
 $pypediaXMLRPCServerIP = "95.142.166.55";
 
+//$pypediaSandbox = http://pypediacode.appspot.com
+$pypediaSandbox = 'http://83.212.107.58:8080'
+
 //Default article's Structure
 $pypediaDefaultStructure = array(	0 => "_PYP_ARTICLE_",
 							1 => array(
@@ -1663,6 +1666,9 @@ print ret
 
 //Execute the unitests in google appspots directly from here
 function pypediaexec3($theCode, $unitests, $pypediaTitle, $pypediaSection) {
+	
+	global $pypediaSandbox;
+	
 	if (!$unitests) {
 		$code = pypedia_build_python_run_code($theCode);
 		$line_limit = 500;
@@ -1673,7 +1679,7 @@ function pypediaexec3($theCode, $unitests, $pypediaTitle, $pypediaSection) {
 	}
 
 	$ch = curl_init();
-	curl_setopt($ch,CURLOPT_URL,'http://pypediacode.appspot.com');
+	curl_setopt($ch,CURLOPT_URL, $pypediaSandbox);
 	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch,CURLOPT_POST, 1);
 	curl_setopt($ch,CURLOPT_POSTFIELDS,urlencode($code));
