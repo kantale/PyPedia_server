@@ -95,11 +95,11 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         #Print log info.
         self.log_fd.write('_________________\n')
         con_ip, con_port = self.client_address
-        self.log_df.write('%s Client: %s %s\n' % (strftime("%Y-%m-%d %H:%M:%S", gmtime()) , str(con_ip), str(con_port)))
-        self.log_df.write('Requested code:\n')
-        self.log_df.write(cmd)
-        self.log_df.write("Response: %s\n" % json.dumps(repr(data)))
-        self.log_df.flush()
+        self.log_fd.write('%s Client: %s %s\n' % (strftime("%Y-%m-%d %H:%M:%S", gmtime()) , str(con_ip), str(con_port)))
+        self.log_fd.write('Requested code:\n')
+        self.log_fd.write(cmd)
+        self.log_fd.write("Response: %s\n" % json.dumps(repr(data)))
+        self.log_fd.flush()
 
         self.send_response(200) 
 
