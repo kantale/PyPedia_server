@@ -89,7 +89,7 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         #Check if log_fd exists
         try:
         	self.log_fd
-        except NameError:
+        except AttributeError:
         	self.log_fd = open('log.txt', 'a')
 
         #Print log info.
