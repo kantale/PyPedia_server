@@ -78,30 +78,28 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     	sys.stdout = StringIO.StringIO()
 
     	# get the POST data, unquote and strip
-    	# print self.client_address # ex. ('127.0.0.1', 61469)
         content_len = int(self.headers.getheader('content-length'))
         cmd = self.rfile.read(content_len)
-        cmd = urllib.unquote(cmd)
-#        cmd = cmd.replace(u"\xa0", "")
-
-#        print '-' * 20
-#        print cmd
-#        print '-' * 20
-
-        #parsed = urlparse.parse_qs(post_body)
-        #print parsed
-        
+        cmd = urllib.unquote(cmd)        
  
         data = exec_timed_process(cmd, self.time_limit)
 
         sys.stdout = temp_stdout
+        
+        #Check if log_fd exists
+        try:
+        	self.log_fd
+        except NameError:
+        	self.log_fd = open('log.txt', 'a')
 
         #Print log info.
-        print '_' * 20
-        print strftime("%Y-%m-%d %H:%M:%S", gmtime()), 'Client:', self.client_address
-        print 'Requested code:'
-        print cmd
-        print "Response: %s" % json.dumps(repr(data))
+        self.log_fd.write('_________________\n')
+        con_ip, con_port = self.client_address
+        self.log_df.write('%s Client: %s %s\n' % (strftime("%Y-%m-%d %H:%M:%S", gmtime()) , str(con_ip), str(con_port)))
+        self.log_df.write('Requested code:\n')
+        self.log_df.write(cmd)
+        self.log_df.write("Response: %s\n" % json.dumps(repr(data)))
+        self.log_df.flush()
 
         self.send_response(200) 
 
