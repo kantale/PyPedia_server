@@ -1,4 +1,3 @@
-
 """
 
   Copyright (C) Alexandros Kanterakis
@@ -29,6 +28,7 @@ import urllib
 import json
 import sys
 
+from time import gmtime, strftime
 from multiprocessing import Process, Queue
 
 from Queue import Empty
@@ -90,11 +90,18 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         #parsed = urlparse.parse_qs(post_body)
         #print parsed
-
+        
+ 
         data = exec_timed_process(cmd, self.time_limit)
 
         sys.stdout = temp_stdout
-        print "data: %s" % json.dumps(repr(data))
+
+        #Print log info.
+        print '_' * 20
+        print strftime("%Y-%m-%d %H:%M:%S", gmtime()), 'Client:', self.client_address
+        print 'Requested code:'
+        print cmd
+        print "Response: %s" % json.dumps(repr(data))
 
         self.send_response(200) 
 
