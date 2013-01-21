@@ -80,7 +80,7 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     	# get the POST data, unquote and strip
         content_len = int(self.headers.getheader('content-length'))
         cmd = self.rfile.read(content_len)
-        cmd = urllib.unquote(cmd)        
+        cmd = urllib.unquote_plus(cmd)        
  
         data = exec_timed_process(cmd, self.time_limit)
 
