@@ -1,4 +1,3 @@
-
 			function pyp_get_execution_command(clicked_id) {
 						var elem = document.getElementById('parameters_form').elements;
 						var params = '';
@@ -162,7 +161,7 @@
 									url: 'http://83.212.107.58:8080',
 									data: encodeURIComponent(data),
 									success: (function (data){pyp_show_message(data['text'], 'f5faff');}),
-									error: (function(){pyp_show_message('Could not contact appspot', 'cc3333');}),
+									error: (function(){pyp_show_message('Could not contact sandbox', 'cc3333');}),
 									dataType: 'json',
 									type: 'post'
 								});
