@@ -151,7 +151,7 @@
 						var command = '';
 						if (clicked_id == 'eob') command = pyp_get_execution_command(clicked_id);
 						else command = myCodeMirror.getValue();
-						pyp_show_message('Submitting to Google App Engine. Please wait..', 'f5faff');
+						pyp_show_message('Submitting to python sandbox. Please wait..', 'f5faff');
 						request = $.ajax({
 							url: 'index.php',
 							data: {get_code : command } ,
