@@ -2271,7 +2271,7 @@ function pypedia_REST_API($wgRequest) {
         	curl_close($crl);
 
 		$gist_code = "$gist_code\n\n$pypediaTitle = $fun_name";
-		$code_section = "==Code==\n<source lang=\"py\">\n$gist_code</source>";
+		$code_section = "==Code==\n<source lang=\"py\">\n$gist_code\n</source>";
 		$unit_tests_section = "==Unit Tests==\n<source lang=\"py\">\n$uni\n</source>";
 		$development_code_section = "==Development Code==\n<source lang=\"py\">\n$gist_code\n</source>";
         	$permissions_section = "==Permissions==";
