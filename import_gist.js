@@ -22,7 +22,7 @@
 
 			function import_gist_2() {
 				var url_textbox = "URL: <input type='text' value='' id='text_gist_url' size='50'/><p>";
-				url_textbox += "Function or Class name: <input type='text' value='' id='text_gist_name'/><p>";
+				url_textbox += " Main object's name: <input type='text' value='' id='text_gist_name'/> this should be the main importable object existing in your code. The created page will be named after this object and your username.<p>";
 				url_textbox += "  Documentation (you can use wikitext): <textarea id='ta_gist_doc' rows='4' cols='50'></textarea><p>";
 				url_textbox += "  Insert python functions that have to return True if your class/function works properly (Unitests): <textarea id='ta_gist_uni' rows='8' cols='50'>def test_1(): \n    return True</textarea><p>";
 				url_textbox += "  Number of parameters: <select id='combo_gist_param_n' onchange='change_gist_param_n()''>";
@@ -30,7 +30,7 @@
 				for (var i=0; i<=10; i++) {
 					url_textbox += '<option value="' + i + '">' + i + '</option>\n';
 				}
-				url_textbox += '</select><p>';	
+				url_textbox += '</select> (if this is not a function, then select 0)<p>';
 
 				var div_ig = document.getElementById('ig');
 				div_ig.innerHTML = url_textbox;
@@ -49,6 +49,7 @@
 				var gist_parameters_div = document.createElement("div");
 				gist_parameters_div.id = 'gist_parameters_div';
 
+				if (selected_index > 1) {gist_parameters_div.innerHTML = "PyPedia will try to create a HTML form for this function's parameters. Variables that are defined as 'expression', will be evaluated (with the 'eval' function). Otherwise they will be passed as string values.<p>";}
 				for (var i=0; i<selected_index-1; i++) {
 					gist_parameters_div.innerHTML += 'Parameter name: <input type="text" id="gist_param_name_' + i + '"/>';
 					gist_parameters_div.innerHTML += ' Type: <select id="gist_param_type_' + i + '"><option value="expression">expression</option><option value="string">string</option></select>';
