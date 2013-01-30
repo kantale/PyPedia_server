@@ -97,11 +97,26 @@ substitute index.php and Vector.php (after taking backups)
 
 Go to /extensions/PyPedia_server and run:
 
-cp ../../index.php ../../index.php.backup
-cp index.php ../../index.php
-
 cp ../../skins/Vector.php ../../skins/Vector.php.backup
 cp Vector.php ../../skins/Vector.php
+
+Edit line 2738 of includes/OutputPage.php before:
+    if ( $wgResourceLoaderExperimentalAsyncLoading ) {
+Add the following: (substitute www.pypedia.com with your's installation domain name)
+
+    $scripts .= '
+    <!-- PYPEDIA JS SCRIPTS -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    <script src="http://www.pypedia.com/extensions/PyPedia_server/pypedia.js"></script>
+    <script src="http://www.pypedia.com/extensions/PyPedia_server/import_gist.js"></script>
+    <!-- END OF PYPEDIA JS SCRIPTS -->
+    ';
+
+Edit index.php and after the line:
+    $mediaWiki = new MediaWiki();
+
+Add the Line:
+    pypedia_REST_API($wgRequest);
 
 
 ------------------------------------------------------------------
