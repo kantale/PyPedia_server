@@ -70,7 +70,7 @@ def exec_timed_process(the_code, time_limit):
 
 class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
-    time_limit = 5
+    time_limit = 10
 
     def do_POST(self):
         #Same code as in appspot
