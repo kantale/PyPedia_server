@@ -1246,9 +1246,9 @@ sub uni1 {
 <p>
 {{#input:type=hidden|name=article_title|value=$title_real}}
 {{#input:type=hidden|name=pyp_username|value={{CURRENTUSER}}}}
+{{#input:type=ajax|value=Run|id=eob}}
 {{#input:type=ajax|value=Download code|id=dc}}
 {{#input:type=ajax|value=Execute on remote computer|id=eorc}}
-{{#input:type=ajax|value=Execute on browser|id=eob}}
 {{#formend:}}
 
 <!-- EDIT HERE! -->
@@ -1575,9 +1575,9 @@ function pypediaGalaxyXML2HTML($galaxyXML, $pypediaTitle, $pypediaUser, $pypedia
 	$ret .= "
 {{#input:type=hidden|name=article_title|value=$pypediaTitle_nospace}}
 {{#input:type=hidden|name=pyp_username|value={{CURRENTUSER}}}}
+{{#input:type=ajax|value=Run|id=eob}}
 {{#input:type=ajax|value=Download code|id=dc}}
 {{#input:type=ajax|value=Execute on remote computer|id=eorc}}
-{{#input:type=ajax|value=Execute on browser|id=eob}}
 {{#formend:}}
 ";
 
