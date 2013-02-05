@@ -2156,7 +2156,7 @@ function pypedia_REST_API($wgRequest) {
 		print $results;
 		exit;
 	}
-
+	
 	$raw_code = $wgRequest->getVal( 'is_logged_in' );
 	if ($raw_code) {
 		$currentUser = $wgUser->getName();

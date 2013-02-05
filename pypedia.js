@@ -147,6 +147,12 @@
 						var filenames = form_elems[3];
 						pyp_upload_remote(filenames, form_elems[1], password, 0, filenames, form_elems[0], form_elems[2]);
 					}
+					else if (clicked_id == 'create_l') {
+						var code = myCodeMirror.getValue();
+						var url = 'http://www.pypedia.com/index.php?input_code=' + encodeURIComponent(code);
+						var message = '<a href="' + url + '">' + url + '</a>';
+						pyp_show_message(message);
+					}
 					else if ((clicked_id == 'eob') || clicked_id == 'eobm') {
 						var command = '';
 						if (clicked_id == 'eob') command = pyp_get_execution_command(clicked_id);

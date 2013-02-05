@@ -97,7 +97,7 @@ class VectorTemplate extends BaseTemplate {
 	 * Outputs the entire contents of the (X)HTML page
 	 */
 	public function execute() {
-		global $wgServer, $wgScriptPath;
+		global $wgServer, $wgScriptPath, $wgRequest;
 		global $wgVectorUseIconWatch;
 
 		// Build additional attributes for navigation urls
@@ -239,10 +239,17 @@ class VectorTemplate extends BaseTemplate {
 
 	<!-- PYPEDIA -->
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-<script src="<?php echo $wgServer . $wgScriptPath ; ?>/extensions/PyPedia_server/pypedia.js"></script>
+<?php if ($this->data['title'] == 'Main Page') { 
+	//The script to put on the main text box
+	$raw_code = $wgRequest->getVal( 'input_code' );
+	if ($raw_code) {
+		$input_code = str_replace('"', '\\"', str_replace("\n", '\n', urldecode($raw_code)));
+	}
+	else {
+		$input_code = 'print \'Welcome to PyPedia\'\n\nprint \'This is a Mandelbrot fractal:\'\nMandelbrot()\n';
+	}
 
-<?php if ($this->data['title'] == 'Main Page') { ?>
+?>
 <script src="<?php echo $wgServer . $wgScriptPath ; ?>/extensions/PyPedia_server/CodeMirror/CodeMirror-2.18/lib/codemirror.js"></script>
 <link rel="stylesheet" href="<?php echo $wgServer . $wgScriptPath ; ?>/extensions/PyPedia_server/CodeMirror/CodeMirror-2.18/theme/default.css">
 <link rel="stylesheet" href="<?php echo $wgServer . $wgScriptPath ; ?>/extensions/PyPedia_server/CodeMirror/CodeMirror-2.18/lib/codemirror.css">
@@ -253,7 +260,7 @@ class VectorTemplate extends BaseTemplate {
 var myTextArea = document.getElementById('main_form');
 var myCodeMirror = CodeMirror(function(elt) { myTextArea.parentNode.replaceChild(elt, myTextArea); },
 
-{ mode:"python", gutter:"true", lineNumbers: "true", value: "print 'Welcome to PyPedia'\n\nprint 'This is a Mandelbrot fractal:'\nMandelbrot()\n" });
+{ mode:"python", gutter:"true", lineNumbers: "true", value: "<?php echo $input_code ?>" });
 
 </script>
 <?php } ?>
@@ -374,6 +381,7 @@ var myCodeMirror = CodeMirror(function(elt) { myTextArea.parentNode.replaceChild
 		<?php echo $content; /* Allow raw HTML block to be defined by extensions */ ?>
 <?php
 		endif; ?>
+
 	</div>
 </div>
 <?php
