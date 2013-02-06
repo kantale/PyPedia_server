@@ -2231,6 +2231,7 @@ function pypedia_REST_API($wgRequest) {
 	if ($raw_code) {
 		$currentUser = $wgUser->getName();
 		$gist_url = urldecode($raw_code);
+		$open_url = $wgRequest->getVal( 'open_url' );
 		$n_params = urldecode($wgRequest->getVal( 'n_params' ));
 		$fun_name = urldecode($wgRequest->getVal( 'fun_name' ));
 		$doc      = urldecode($wgRequest->getVal( 'doc' ));
@@ -2262,13 +2263,24 @@ function pypedia_REST_API($wgRequest) {
 		$return_section = "===Return===\n";
 		$see_also_section = "===See also===\n"; 
 
-        	$crl = curl_init();
-        	$timeout = 5;
-        	curl_setopt ($crl, CURLOPT_URL, $gist_url);
-        	curl_setopt ($crl, CURLOPT_RETURNTRANSFER, 1);
-        	curl_setopt ($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
-        	$gist_code = curl_exec($crl);
-        	curl_close($crl);
+		if ($open_url == '1') {
+			$crl = curl_init();
+			$timeout = 5;
+			curl_setopt ($crl, CURLOPT_URL, $gist_url);
+			curl_setopt ($crl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt ($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
+			$gist_code = curl_exec($crl);
+			curl_close($crl);
+
+			if ($gist_code == '') {
+				print "Error: Could not open URL";
+				exit;
+			}
+		}
+		else {
+			//$gist_code = $gist_url;
+			$gist_code = pypediaGetCodeFromArticle("", $gist_url, "", $before_timestamp);
+		}
 
 		$gist_code = "$gist_code\n\n$pypediaTitle = $fun_name";
 		$code_section = "==Code==\n<source lang=\"py\">\n$gist_code\n</source>";

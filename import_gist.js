@@ -8,7 +8,7 @@
                                         success: (function (data){
 						if (data == 'True') {
 							div_mb.innerHTML = '';
-							import_gist_2();
+							import_gist_2(button_id);
 						}
 						else {
 							div_mb.innerHTML = 'Error: You need to log in to import a script';
@@ -20,8 +20,11 @@
                                 });
 			}
 
-			function import_gist_2() {
-				var url_textbox = "URL: <input type='text' value='' id='text_gist_url' size='50'/><p>";
+			function import_gist_2(button_pressed) {
+				var url_textbox = '';
+				if (button_pressed != 'import_gist_button_nourl') {
+					url_textbox += "URL: <input type='text' value='' id='text_gist_url' size='50'/><p>";
+				}
 				url_textbox += " Main object's name: <input type='text' value='' id='text_gist_name'/> this should be the main importable object existing in your code. The created page will be named after this object and your username.<p>";
 				url_textbox += "  Documentation (you can use wikitext): <textarea id='ta_gist_doc' rows='4' cols='50'></textarea><p>";
 				url_textbox += "  Insert python functions that have to return True if your class/function works properly (Unitests): <textarea id='ta_gist_uni' rows='8' cols='50'>def test_1(): \n    return True</textarea><p>";
@@ -67,8 +70,17 @@
 
 			function import_gist_f() {
 				//Create a JSON object with all parameters
+				var text_gist_url = document.getElementById('text_gist_url');
+				var code;
+				if (text_gist_url) {
+					code = text_gist_url.value;
+				}
+				else {
+					code = myCodeMirror.getValue(); 
+				}
 				var json_gist = {
-					'gist_url' : encodeURIComponent(document.getElementById('text_gist_url').value),
+					'gist_url' : encodeURIComponent(code),
+					'open_url' : (text_gist_url) ? '1' : '0',
 					'n_params' : encodeURIComponent(Math.max(0, document.getElementById('combo_gist_param_n').selectedIndex-1)), 
 					'fun_name' : encodeURIComponent(document.getElementById('text_gist_name').value),
 					'doc'      : encodeURIComponent(document.getElementById('ta_gist_doc').value),
