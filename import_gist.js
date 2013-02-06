@@ -25,7 +25,7 @@
 				if (button_pressed != 'import_gist_button_nourl') {
 					url_textbox += "URL: <input type='text' value='' id='text_gist_url' size='50'/><p>";
 				}
-				url_textbox += " Main object's name: <input type='text' value='' id='text_gist_name'/> this should be the main importable object existing in your code. The created page will be named after this object and your username.<p>";
+				url_textbox += " Main object's name: <input type='text' value='' id='text_gist_name'/> this should be the main importable object existing in your code. If this object is not callable you will not be able to run this method online within PyPedia. The created page will be named after this object and your username.<p>";
 				url_textbox += "  Documentation (you can use wikitext): <textarea id='ta_gist_doc' rows='4' cols='50'></textarea><p>";
 				url_textbox += "  Insert python functions that have to return True if your class/function works properly (Unitests): <textarea id='ta_gist_uni' rows='8' cols='50'>def test_1(): \n    return True</textarea><p>";
 				url_textbox += "  Number of parameters: <select id='combo_gist_param_n' onchange='change_gist_param_n()''>";

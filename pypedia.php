@@ -2276,13 +2276,16 @@ function pypedia_REST_API($wgRequest) {
 				print "Error: Could not open URL";
 				exit;
 			}
+
+			$gist_code = "$gist_code\n\n$pypediaTitle = $fun_name";
+			$gist_code_to_test = $gist_code;
 		}
 		else {
-			//$gist_code = $gist_url;
-			$gist_code = pypediaGetCodeFromArticle("", $gist_url, "", $before_timestamp);
+			$gist_code_to_test = pypediaGetCodeFromArticle("", $gist_url, "", $before_timestamp);
+			$gist_code_to_test = "$gist_code_to_test\n\n$pypediaTitle = $fun_name";
+			$gist_code = "$gist_url\n\n$pypediaTitle = $fun_name";
 		}
 
-		$gist_code = "$gist_code\n\n$pypediaTitle = $fun_name";
 		$code_section = "==Code==\n<source lang=\"py\">\n$gist_code\n</source>";
 		$unit_tests_section = "==Unit Tests==\n<source lang=\"py\">\n$uni\n</source>";
 		$development_code_section = "==Development Code==\n<source lang=\"py\">\n$gist_code\n</source>";
@@ -2298,7 +2301,7 @@ function pypedia_REST_API($wgRequest) {
 		//$gist_code = file_get_contents(urlencode($gist_url), $maxLen = 1024*1024);
 
 		//Test the article
-		$response = pypediaexec3($gist_code, $uni, $pypediaTitle, null);
+		$response = pypediaexec3($gist_code_to_test, $uni, $pypediaTitle, null);
 
 		if ($response == 'ok') {
 			#Check if article exists
