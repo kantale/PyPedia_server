@@ -243,7 +243,7 @@ class VectorTemplate extends BaseTemplate {
 	//The script to put on the main text box
 	$raw_code = $wgRequest->getVal( 'input_code' );
 	if ($raw_code) {
-		$input_code = str_replace('"', '\\"', str_replace("\n", '\n', urldecode($raw_code)));
+		$input_code = str_replace("\n", '\n', addslashes($input_code));
 	}
 	else {
 		$input_code = 'print \'Welcome to PyPedia\'\n\nprint \'This is a Mandelbrot fractal:\'\nMandelbrot()\n';
