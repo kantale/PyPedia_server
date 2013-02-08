@@ -1671,7 +1671,7 @@ def exec_code(theCode, theUnitests):
 		#scopeStart is in scopeEnd but not in scopeStart...
 		if k == "scopeStart": continue
 
-		if k not in scopeStart and hasattr(k, "__call__"):
+		if k not in scopeStart and hasattr(v, "__call__"):
 			try:
 				returned = v()
 			except Exception as inst:
