@@ -1670,10 +1670,16 @@ def exec_code(theCode, theUnitests):
 	for k,v in scopeEnd.iteritems():
 		#scopeStart is in scopeEnd but not in scopeStart...
 		if k == "scopeStart": continue
+		printed = ""
 
 		if k not in scopeStart and hasattr(v, "__call__"):
 			try:
+				old_stdout = sys.stdout
+				new_stdout = StringIO.StringIO()
+				sys.stdout = new_stdout
 				returned = v()
+				printed = new_stdout.getvalue()
+				sys.stdout = old_stdout
 			except Exception as inst:
 				return "Unitest %s failed with the following exception:\n%s\n" %  (k, traceback.format_exc())
 
@@ -1685,9 +1691,12 @@ def exec_code(theCode, theUnitests):
 			elif type(returned).__name__ == "NoneType":
 				pass
 			elif type(returned).__name__ == "str":
-				return "Unitest: %s Failed\nReason Given:\n%s" % (k, returned)
+				return "Unitest: %s failed. Reason Given:\n%s" % (k, returned)
 			else:
 				return "Unitest error. Unitest %s returned type %s. Don\'t know how to handle this." % (k, type(returned).__name__)
+
+			if printed:
+				return "Unitest: %s failed. Reason Given:\n%s" % (k, printed)
 
 	return "ok"
 
