@@ -1682,6 +1682,8 @@ def exec_code(theCode, theUnitests):
 				#If it is false then raise exception
 				if not returned:
 					return "Unitest: %s Failed" % (k)
+			elif type(returned).__name__ == "NoneType":
+				pass
 			elif type(returned).__name__ == "str":
 				return "Unitest: %s Failed\nReason Given:\n%s" % (k, returned)
 			else:
