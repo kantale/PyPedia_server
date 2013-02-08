@@ -1671,11 +1671,11 @@ def exec_code(theCode, theUnitests):
 		#scopeStart is in scopeEnd but not in scopeStart...
 		if k == "scopeStart": continue
 
-		if k not in scopeStart:
+		if k not in scopeStart and hasattr(k, "__call__"):
 			try:
 				returned = v()
 			except Exception as inst:
-				return str(inst)
+				return "Unitest %s failed with the following exception:\n%s\n" %  (k, traceback.format_exc())
 
 			#Did we returned boolean?
 			if type(returned).__name__ == "bool":
