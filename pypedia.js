@@ -167,8 +167,8 @@
 						pyp_upload_remote(filenames, form_elems[1], password, 0, filenames, form_elems[0], form_elems[2]);
 					}
 					else if (clicked_id == 'create_l') {
-						var code = myCodeMirror.getValue();
-						var url = 'http://test.pypedia.com/index.php?input_code=' + encodeURIComponent(code);
+						var code = myCodeMirror.getValue(); 
+						var url = 'http://www.pypedia.com/index.php?input_code=' + encodeURIComponent(code);
 						var message = '<a href="' + url + '">' + url + '</a>';
 						pyp_show_message(message);
 					}
