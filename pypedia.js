@@ -5,6 +5,8 @@
 						var username = '';
 						var password = '';
 						var filenames = [];
+						var download_code = '';
+						var execute_command = '';
 						for(var i = 0; i < elem.length; i++) {
 							prefix = elem[i].name.substring(0, 4);
 							if (elem[i].name == 'article_title') {
@@ -15,10 +17,14 @@
 							}
 							else if (prefix == 'data' || prefix == 'selc') {
 								params += '\'' + elem[i].name.substring(6) + '\'' + ' : ' + '\'' +  elem[i].value + '\',';
+								download_code += '    ' + elem[i].name.substring(6) + ' = ' + '\'' +  elem[i].value + '\'\n';
+								execute_command +=  elem[i].name.substring(6) + ', ';
 							}
 							else if (prefix == 'file') {
 								var filename = elem[i].value.replace(/^.*[\\\/]/, '');
 								params += '\'' + elem[i].name.substring(6) + '\'' + ' : ' + '\'' + filename + '\',';
+								download_code += '     ' + elem[i].name.substring(6) + ' = ' + '\'' + filename + '\'\n';
+								execute_command += elem[i].name.substring(6) + ', ';
 								filenames.push(filename);
 							}
 							else if (prefix == 'eval') {
@@ -27,13 +33,26 @@
 									elem_value = "None"
 								}
 								params += '\'' + elem[i].name.substring(6) + '\'' + ' : ' + elem_value + ',';
+								download_code += '    ' + elem[i].name.substring(6) + ' = ' + elem_value + '\n';
+								execute_command += elem[i].name.substring(6) + ', ';
 							}
 						}
 						if (clicked_id == 'eob') {
 							return 'print "Output:<pre>"\n_=' + article_name + '(**{' + params + '})\nprint "</pre>"\nif _ != None: print "Returned:<pre>%s</pre>" % str(_)';
 						}
 						if (clicked_id == 'dc') {
-							return '_=' + article_name + '(**{' + params + '})\nif _ != None: print "Returned:\\n%s" % str(_)\n';
+							var to_ret = '\n\n#Method name =' + article_name + '()\n';
+							to_ret += "if __name__ == '__main__':\n";
+							to_ret += '    print __pypdoc__\n';
+							to_ret += download_code + '\n';
+							to_ret += '    returned = ' + article_name + '(' + execute_command.substring(0, execute_command.length - 2) + ')\n';
+							to_ret += '    if returned:\n';
+							to_ret += '        print \'Method returned:\'\n';
+							to_ret += '        print str(returned)\n';
+
+							return to_ret;
+
+							//return '_=' + article_name + '(**{' + params + '})\nif _ != None: print "Returned:\\n%s" % str(_)\n';
 						}
 						if (clicked_id == 'eorcg') {
 							return [article_name, username, params, filenames];
@@ -149,7 +168,7 @@
 					}
 					else if (clicked_id == 'create_l') {
 						var code = myCodeMirror.getValue();
-						var url = 'http://www.pypedia.com/index.php?input_code=' + encodeURIComponent(code);
+						var url = 'http://test.pypedia.com/index.php?input_code=' + encodeURIComponent(code);
 						var message = '<a href="' + url + '">' + url + '</a>';
 						pyp_show_message(message);
 					}
@@ -163,7 +182,7 @@
 							data: {get_code : command } ,
 							success: (function (data) {
 								request2 = $.ajax({
-									// url: 'http://pypediacode.appspot.com',
+									//url: 'http://pypediacode.appspot.com',
 									url: 'http://83.212.107.58:8080',
 									data: encodeURIComponent(data),
 									success: (function (data){pyp_show_message(data['text'], 'f5faff');}),

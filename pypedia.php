@@ -2151,10 +2151,32 @@ function pypedia_REST_API($wgRequest) {
 		if ($pos1 === false || $pos2 === false) {
 		}
 		else {
+
+			#Get the License
+			$license = pypediaGetArticle('PyPedia:License');
+
+			#Get the name of the function
 			$fun_name = substr($raw_code, $pos1, $pos2-$pos1);
+
+			#Get the documentation of the function
+			$function_content = pypediaGetArticle($fun_name);
+			$documentation = pypediaGetSection($function_content, '==Documentation==');
+			
 			$theCode = pypediaGetCodeFromArticle("", $raw_code, "", $before_timestamp);
 			header('Content-disposition: attachment; filename=' . $fun_name . '.py');
 			header('Content-type: text/plain');
+
+			echo "\"\"\"\n";
+			echo $license;
+			echo "\n\"\"\"\n\n";
+
+			echo "__pypdoc__ = \"\"\"\n";
+			echo "Method: $fun_name\n";
+			echo "Link: http://www.pypedia.com/index.php/$fun_name\n";
+			echo "Retrieve date: ". date('r') . "\n\n";
+			echo $documentation;
+			echo "\n\"\"\"\n";
+
 			echo $theCode;
 			exit;
 		}
