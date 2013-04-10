@@ -18,13 +18,13 @@
 							else if (prefix == 'data' || prefix == 'selc') {
 								params += '\'' + elem[i].name.substring(6) + '\'' + ' : ' + '\'' +  elem[i].value + '\',';
 								download_code += '    ' + elem[i].name.substring(6) + ' = ' + '\'' +  elem[i].value + '\'\n';
-								execute_command +=  elem[i].name.substring(6) + ', ';
+								execute_command +=  elem[i].name.substring(6) + '=' + elem[i].name.substring(6) + ', ';
 							}
 							else if (prefix == 'file') {
 								var filename = elem[i].value.replace(/^.*[\\\/]/, '');
 								params += '\'' + elem[i].name.substring(6) + '\'' + ' : ' + '\'' + filename + '\',';
 								download_code += '     ' + elem[i].name.substring(6) + ' = ' + '\'' + filename + '\'\n';
-								execute_command += elem[i].name.substring(6) + ', ';
+								execute_command += elem[i].name.substring(6) + '=' + elem[i].name.substring(6) + ', ';
 								filenames.push(filename);
 							}
 							else if (prefix == 'eval') {
@@ -34,7 +34,7 @@
 								}
 								params += '\'' + elem[i].name.substring(6) + '\'' + ' : ' + elem_value + ',';
 								download_code += '    ' + elem[i].name.substring(6) + ' = ' + elem_value + '\n';
-								execute_command += elem[i].name.substring(6) + ', ';
+								execute_command += elem[i].name.substring(6) + '=' + elem[i].name.substring(6)  + ', ';
 							}
 						}
 						if (clicked_id == 'eob') {
