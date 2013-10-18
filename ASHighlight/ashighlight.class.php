@@ -45,7 +45,7 @@ class ASHighlight{
 			." --syntax=".escapeshellarg($lang);
 
 		if($this->line_numbers){
-			$cmd.=" --linenumbers";
+			$cmd.=" --line-numbers";
 			if(isset($this->start_line)){
 				$cmd.=" --line-number-start=".$this->start_line;
 			}
