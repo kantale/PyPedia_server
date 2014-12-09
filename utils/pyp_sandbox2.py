@@ -117,7 +117,12 @@ class P_handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 def main():
 
 	PORT = 8080
-	httpd = SocketServer.TCPServer(("", PORT), P_handler)
+
+	#Following directions from: http://stackoverflow.com/questions/2274320/socketserver-threadingtcpserver-cannot-bind-to-address-after-program-restart
+	httpd = SocketServer.TCPServer(("", PORT), P_handler, False) # Do not automatically bind
+	httpd.allow_reuse_address = True # Prevent 'cannot bind to address' errors on restart
+	httpd.server_bind()     # Manually bind, to support allow_reuse_address
+	httpd.server_activate() # (see above comment)
 
 	print "serving at port", PORT
 	httpd.serve_forever()
@@ -125,3 +130,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
